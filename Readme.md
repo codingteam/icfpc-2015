@@ -10,7 +10,12 @@ Team
 ----
 Team members in alphabetical order:
 
-- @ForNeVeR
-- @Minoru
-- @portnov
-- @rexim
+- [ForNeVeR][fornever]
+- [Minoru][minoru]
+- [portnov][]
+- [rexim][]
+
+[fornever]: https://github.com/ForNeVeR
+[minoru]: https://github.com/Minoru
+[portnov]: https://github.com/portnov
+[rexim]: https://github.com/rexim

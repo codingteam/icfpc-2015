@@ -9,19 +9,32 @@ import scala.io.Source
  */
 object MapPrinter {
 
-  def printMap(fd : FieldDef) : Unit = {
-    for (y <- List.range(0, fd.height)) {
+  private def print2d(arr : Seq[CellDef], width : Int, height : Int, mark : String) : Unit = {
+    for (y <- List.range(0, height)) {
       if (y % 2 == 1) {
         print("  ")
       }
-      for (x <- List.range(0, fd.width)) {
-        if (fd.filled.indexOf(CellDef(x, y)) >= 0) {
-          print("|XXX")
+      for (x <- List.range(0, width)) {
+        if (arr.indexOf(CellDef(x, y)) >= 0) {
+          print("|" concat  mark)
         } else {
           print("|   ")
         }
       }
       print("|\n")
+    }
+  }
+
+  def printMap(fd : FieldDef) : Unit = {
+
+    print2d(fd.filled, fd.width, fd.height, "XXX")
+
+    for (unit <- fd.units) {
+      println("\nUnit:")
+      Utils.getUnitSize(unit) match {
+        case (width, height) =>
+          print2d(unit.members, width, height, "UUU")
+      }
     }
   }
 

@@ -4,6 +4,12 @@ Contest site: http://icfpcontest.org/
 
 Member-only conference (ask ForNeVeR to add you): `icfpc-codingteam@conference.jabber.ru`
 
+Submissions
+-----------
+> Submit solutions to: https://davar.icfpcontest.org/teams/83/solutions
+
+> Your API token is: `mlzBHPsKo5ANdYQaj73UsluHpl39mCCEidAf7obtTjk=`
+
 Team
 ----
 Team members in alphabetical order:

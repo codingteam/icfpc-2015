@@ -2,9 +2,7 @@ ICFPC 2015
 ==========
 Contest site: http://icfpcontest.org/
 
-Private conference: `icfpc-codingteam@conference.jabber.ru`
-
-Conference password: `12707ec2`
+Member-only conference (ask ForNeVeR to add you): `icfpc-codingteam@conference.jabber.ru`
 
 Team
 ----

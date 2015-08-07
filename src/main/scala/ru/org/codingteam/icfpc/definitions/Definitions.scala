@@ -1,11 +1,11 @@
 package ru.org.codingteam.icfpc.definitions
 
 case class FieldDef(id: Int,
-                    units: Array[UnitDef],
+                    units: Vector[UnitDef],
                     width: Int,
                     height: Int,
-                    filled: Array[CellDef],
+                    filled: Vector[CellDef],
                     sourceLength: Int,
-                    sourceSeeds: Array[Int])
+                    sourceSeeds: Vector[Int])
 case class CellDef(x: Int, y: Int)
-case class UnitDef(members: Array[CellDef], pivot: CellDef)
+case class UnitDef(members: Vector[CellDef], pivot: CellDef)

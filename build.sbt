@@ -9,5 +9,6 @@ scalaVersion := "2.11.7"
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 libraryDependencies ++= Seq(
+  "com.lihaoyi" %% "upickle" % "0.3.4",
   "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 )

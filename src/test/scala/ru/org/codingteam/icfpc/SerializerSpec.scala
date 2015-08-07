@@ -23,12 +23,12 @@ class SerializerSpec extends FlatSpec with Matchers {
                      |    "id": 0,
                      |    "filled": [],
                      |    "sourceLength": 100
-                     |}"""
-    val field = Serializer.deserialize[FieldDef](problem0)
-    val expected = FieldDef(height = 10, width = 10, sourceSeeds = Array(0), units = Array(UnitDef(
-      members = Array(CellDef(0, 0)),
+                     |}""".stripMargin
+    val field = Serializer.deserialize(problem0)
+    val expected = FieldDef(height = 10, width = 10, sourceSeeds = Vector(0), units = Vector(UnitDef(
+      members = Vector(CellDef(0, 0)),
       pivot = CellDef(0, 0)
-    )), id = 0, filled = Array(), sourceLength = 100)
+    )), id = 0, filled = Vector(), sourceLength = 100)
 
     assert(field === expected)
   }

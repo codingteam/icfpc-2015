@@ -10,6 +10,10 @@ Submissions
 
 > Your API token is: `mlzBHPsKo5ANdYQaj73UsluHpl39mCCEidAf7obtTjk=`
 
+Usage
+-----
+    sbt "run -f filename.json [-print] [-p phrase1] [-p phrase2] ..." 
+
 Team
 ----
 Team members in alphabetical order:

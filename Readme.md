@@ -4,6 +4,10 @@ Contest site: http://icfpcontest.org/
 
 Member-only conference (ask ForNeVeR to add you): `icfpc-codingteam@conference.jabber.ru`
 
+You're welcome to read [our **glorious** logs][logs]!
+
+[logs]: http://0xd34df00d.me/logs/chat/icfpc-codingteam@conference.jabber.ru/2015/08/
+
 Submissions
 -----------
 > Submit solutions to: https://davar.icfpcontest.org/teams/83/solutions

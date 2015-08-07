@@ -2,6 +2,8 @@ package ru.org.codingteam.icfpc
 
 import ru.org.codingteam.icfpc.definitions._
 
+import scala.io.Source
+
 /**
  * Created by portnov on 07.08.15.
  */
@@ -14,7 +16,7 @@ object MapPrinter {
       }
       for (x <- List.range(0, fd.width)) {
         if (fd.filled.indexOf(CellDef(x, y)) >= 0) {
-          print("| x ")
+          print("|XXX")
         } else {
           print("|   ")
         }
@@ -32,6 +34,11 @@ object MapPrinter {
 
   def test() : Unit = {
     printMap(testMap)
+  }
+
+  def printTask(filename : String) : Unit = {
+    val fd = Serializer.deserialize( Source.fromFile(filename).mkString )
+    printMap(fd)
   }
 
 }

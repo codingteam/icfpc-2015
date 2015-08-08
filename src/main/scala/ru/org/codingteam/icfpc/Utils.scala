@@ -71,9 +71,9 @@ object Utils {
     for (cmd <- cmds) {
       buffer += cmd
       val bufstr = buffer.toList.mkString("")
-      println(s"Buffer: ${bufstr}")
+      //println(s"Buffer: ${bufstr}")
       val goodSpells = filterSpells(buffer, currentSpells)
-      println(s"Good spells: ${goodSpells}")
+      //println(s"Good spells: ${goodSpells}")
       if (goodSpells.size == 1 && goodSpells(0)._2 == buffer.toList) {
         result += goodSpells(0)._1
         currentSpells = knownSpells
@@ -85,7 +85,7 @@ object Utils {
       } else {
 
       }
-      println(s"Result: $result")
+      //println(s"Result: $result")
     }
     result += encodeSimple(buffer)
     return result

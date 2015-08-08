@@ -142,7 +142,7 @@ class Emulator private (field : Field) {
 
   // return true if it is possible to spawn new unit
   def spawnUnit(unit : UnitDef) : Boolean = {
-    val unitSize = Utils.getUnitSize(unit)
+    val unitSize = Utils.getUnitActualSize(unit)
     val cY = unit.members.map(_.y).max
     val minX = unit.members.map(_.x).min
     val cX = (field.width - unitSize._1) / 2 - minX

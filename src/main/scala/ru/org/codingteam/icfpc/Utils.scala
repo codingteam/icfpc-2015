@@ -40,6 +40,16 @@ object Utils {
     str.toList.map((c) => unt9.get(c).get)
   }
 
+  def getUnitActualSize(unit : UnitDef) : (Int, Int) = {
+    val maxX = (for (cell <- unit.members) yield cell.x).max
+    val minX = (for (cell <- unit.members) yield cell.x).min
+    val maxY = (for (cell <- unit.members) yield cell.y).max
+    val minY = (for (cell <- unit.members) yield cell.y).min
+    val w = maxX - minX + 1
+    val h = maxY - minY + 1
+    return (w, h)
+  }
+
   def getUnitSize(unit : UnitDef) : (Int, Int) = {
     val w = (for (cell <- unit.members) yield cell.x).max
     val h = (for (cell <- unit.members) yield cell.y).max

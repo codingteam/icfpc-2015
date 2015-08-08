@@ -23,6 +23,14 @@ Usage
     # Run The Visualizator
     sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication"
 
+Visualizer Shorcuts
+-------------------
+
+- W — Move(W)
+- E — Move(E)
+- S — Move(SW)
+- D — Move(SE)
+
 Team
 ----
 Team members in alphabetical order:

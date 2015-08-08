@@ -4,21 +4,16 @@ import java.awt.Color
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.Timer
 
-import ru.org.codingteam.icfpc.Emulator
+import ru.org.codingteam.icfpc.{Command, Emulator}
 
-class Visualizator (emulator: Emulator, board: Board) extends ActionListener{
-  val timer = new Timer(1000, this)
+class Visualizator (emulator: Emulator, board: Board) {
 
-  override def actionPerformed(actionEvent: ActionEvent): Unit = {
-    println("tick!")
+
+  def visualizeState: Unit = {
     clearBoard()
     renderFilled()
-
+    renderCurrentUnit()
     board.repaint()
-  }
-
-  def start(): Unit = {
-    timer.start()
   }
 
   private def clearBoard(): Unit = {
@@ -32,6 +27,15 @@ class Visualizator (emulator: Emulator, board: Board) extends ActionListener{
   private def renderFilled(): Unit = {
     for (cel <- emulator.fieldDef.filled) {
       board.putCell(cel.y, cel.x, Color.YELLOW)
+    }
+  }
+
+  private def renderCurrentUnit(): Unit = {
+
+    if (emulator.currentUnit != null) {
+      for (cel <- emulator.currentUnit.members) {
+        board.putCell(cel.y, cel.x, Color.BLUE)
+      }
     }
   }
 }

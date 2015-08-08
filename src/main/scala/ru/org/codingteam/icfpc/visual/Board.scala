@@ -9,8 +9,10 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
 
   override def paintComponent(g: Graphics): Unit = {
     val g2 = g.asInstanceOf[Graphics2D]
+    g2.setColor(Color.GRAY)
+    g2.fillRect(0, 0, getWidth, getHeight)
+
     renderCells(g2)
-    renderGrid(g2)
   }
 
 
@@ -30,14 +32,25 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
   }
 
   private def renderCells(g2: Graphics2D): Unit = {
-    val cellWidth = getWidth / colsCount.toFloat
+    val cellWidth = getWidth / (colsCount + 1).toFloat
     val cellHeight = getHeight / rowsCount.toFloat
 
     for (row <- 0 until rowsCount) {
       for (col <- 0 until colsCount) {
+        val shift = if (row % 2 == 0) {
+          0.0
+        } else {
+          cellWidth / 2.0
+        }
+
         g2.setColor(cells(row)(col))
-        g2.fillRect((col * cellWidth).toInt, (row * cellHeight).toInt,
+        g2.fillRect((col * cellWidth + shift).toInt, (row * cellHeight).toInt,
           cellWidth.toInt, cellHeight.toInt)
+
+        g2.setColor(Color.BLACK)
+        g2.drawRect((col * cellWidth + shift).toInt, (row * cellHeight).toInt,
+          cellWidth.toInt, cellHeight.toInt)
+
       }
     }
   }

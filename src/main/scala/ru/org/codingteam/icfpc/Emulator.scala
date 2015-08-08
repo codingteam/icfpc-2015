@@ -115,6 +115,13 @@ class Emulator private (field : Field) {
     return ! check(currentUnit)
   }
 
+  // Lock current unit: mark all corresponding cells as Full
+  def lock() : Unit = {
+    currentUnit.members.foreach({
+      case CellDef(x,y) => field(x,y) = CellState.Full
+    })
+  }
+
 }
 
 object Emulator {

@@ -2,21 +2,27 @@ package ru.org.codingteam.icfpc.visual
 
 import java.awt.event.{KeyEvent, KeyListener}
 import java.awt.{Color, Dimension}
-import javax.swing.{WindowConstants, JFrame}
+import java.io.File
+import javax.swing.{JFileChooser, WindowConstants, JFrame}
 
 import ru.org.codingteam.icfpc.{Move, Emulator, Direction}
 
 object VisualizatorApplication {
+  private def loadProblem(fileName: String): Emulator = {
+    val emulator = Emulator(fileName)
+    emulator.initSource(0)
+    emulator.spawnNextUnit()
+    emulator
+  }
+
   def main(args: Array[String]): Unit = {
     val frame = new JFrame("Codingteam ICFPC 2015")
 
-    val emulator = Emulator("problem_2.json")
-    val board = new Board(emulator.fieldDef.height, emulator.fieldDef.width)
-    val visualizator = new Visualizator(emulator, board)
+    var emulator = loadProblem("problem_0.json")
+    val board = new Board
+    val visualizator = new Visualizator(board)
 
-    emulator.initSource(0)
-    emulator.spawnNextUnit();
-    visualizator.visualizeState
+    visualizator.visualizeState(emulator)
 
     frame.addKeyListener(new KeyListener {
 
@@ -28,9 +34,19 @@ object VisualizatorApplication {
           case KeyEvent.VK_E => emulator.emulatorStep(Move(Direction.E))
           case KeyEvent.VK_S => emulator.emulatorStep(Move(Direction.SW))
           case KeyEvent.VK_D => emulator.emulatorStep(Move(Direction.SE))
+          case KeyEvent.VK_O => {
+            val fileChooser = new JFileChooser()
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")))
+            val returnVal = fileChooser.showOpenDialog(frame)
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+              val file = fileChooser.getSelectedFile
+              emulator = loadProblem(file.getAbsolutePath)
+            }
+          }
           case _ =>
         }
-        visualizator.visualizeState
+
+        visualizator.visualizeState(emulator)
       }
 
       override def keyReleased(keyEvent: KeyEvent): Unit = {}

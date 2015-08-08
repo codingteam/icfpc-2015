@@ -30,6 +30,7 @@ Visualizer Shorcuts
 - E — Move(E)
 - S — Move(SW)
 - D — Move(SE)
+- O — Open another problem file
 
 Team
 ----

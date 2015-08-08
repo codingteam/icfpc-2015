@@ -4,9 +4,12 @@ import java.awt.{Font, Color, Graphics2D, Graphics}
 import javax.swing.JPanel
 
 
-class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
-  private val cells = Array.fill(rowsCount, colsCount)(Color.WHITE)
-  var score = 0
+class Board extends JPanel {
+  private var cells = Array(Array(Color.WHITE))
+  private var currentScore = 0
+  private var rowsCount = 1
+  private var colsCount = 1
+
 
   override def paintComponent(g: Graphics): Unit = {
     val g2 = g.asInstanceOf[Graphics2D]
@@ -15,22 +18,6 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
 
     renderCells(g2)
     renderScore(g2)
-  }
-
-
-  private def renderGrid(g2: Graphics2D): Unit = {
-    val cellWidth = getWidth / colsCount.toFloat
-    val cellHeight = getHeight / rowsCount.toFloat
-
-    g2.setColor(Color.BLACK)
-
-    for (i <- 1 until colsCount) {
-      g2.drawLine((i * cellWidth).toInt, 0, (i * cellWidth).toInt, getHeight)
-    }
-
-    for (i <- 1 until rowsCount) {
-      g2.drawLine(0, (i * cellHeight).toInt, getWidth, (i * cellHeight).toInt)
-    }
   }
 
   private def renderCells(g2: Graphics2D): Unit = {
@@ -60,7 +47,7 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
   private def renderScore(g2: Graphics2D): Unit = {
     g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16))
 
-    val text = s"Score: $score"
+    val text = s"Score: $currentScore"
     val metrics = g2.getFontMetrics
     val height = metrics.getHeight
 
@@ -70,5 +57,15 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
 
   def putCell(row: Int, col: Int, color: Color): Unit = {
     cells(row)(col) = color
+  }
+
+  def putScore(score: Int): Unit = {
+    currentScore = score
+  }
+
+  def putSize(rowsCount: Int, colsCount: Int): Unit = {
+    this.rowsCount = rowsCount
+    this.colsCount = colsCount
+    cells = Array.fill(rowsCount, colsCount)(Color.WHITE)
   }
 }

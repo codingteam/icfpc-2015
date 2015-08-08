@@ -4,26 +4,17 @@ import java.awt.Color
 
 import ru.org.codingteam.icfpc.{CellState, Emulator}
 
-class Visualizator (emulator: Emulator, board: Board) {
+class Visualizator (board: Board) {
 
-
-  def visualizeState: Unit = {
-    clearBoard()
-    renderFilled()
-    renderCurrentUnit()
-    renderScore()
+  def visualizeState(emulator: Emulator): Unit = {
+    board.putSize(emulator.field.height, emulator.field.width)
+    renderFilled(emulator)
+    renderCurrentUnit(emulator)
+    renderScore(emulator)
     board.repaint()
   }
 
-  private def clearBoard(): Unit = {
-    for (row <- 0 until board.rowsCount) {
-      for (col <- 0 until board.colsCount) {
-        board.putCell(row, col, Color.WHITE)
-      }
-    }
-  }
-
-  private def renderFilled(): Unit = {
+  private def renderFilled(emulator: Emulator): Unit = {
     for (row <- 0 until emulator.field.height) {
       for (col <- 0 until emulator.field.width) {
         val color = if (emulator.field(col, row) == CellState.Full) {
@@ -36,8 +27,7 @@ class Visualizator (emulator: Emulator, board: Board) {
     }
   }
 
-  private def renderCurrentUnit(): Unit = {
-
+  private def renderCurrentUnit(emulator: Emulator): Unit = {
     if (emulator.currentUnit != null) {
       for (cel <- emulator.currentUnit.members) {
         board.putCell(cel.y, cel.x, Color.BLUE)
@@ -45,7 +35,7 @@ class Visualizator (emulator: Emulator, board: Board) {
     }
   }
 
-  private def renderScore(): Unit = {
-    board.score = emulator.score
+  private def renderScore(emulator: Emulator): Unit = {
+    board.putScore(emulator.score)
   }
 }

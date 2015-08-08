@@ -40,6 +40,7 @@ object Utils {
     str.toList.map((c) => unt9.get(c).get)
   }
 
+  // Size of only unit itself, without empty margins
   def getUnitActualSize(unit : UnitDef) : (Int, Int) = {
     val maxX = (for (cell <- unit.members) yield cell.x).max
     val minX = (for (cell <- unit.members) yield cell.x).min
@@ -50,6 +51,7 @@ object Utils {
     return (w, h)
   }
 
+  // Size of all rectangle used by unit
   def getUnitSize(unit : UnitDef) : (Int, Int) = {
     val w = (for (cell <- unit.members) yield cell.x).max
     val h = (for (cell <- unit.members) yield cell.y).max

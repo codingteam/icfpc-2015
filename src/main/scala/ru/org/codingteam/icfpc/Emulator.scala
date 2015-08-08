@@ -2,15 +2,29 @@ package ru.org.codingteam.icfpc
 
 import ru.org.codingteam.icfpc.definitions.{FieldDef, CellDef, UnitDef}
 
+object Field {
+
+  def from(fieldDef: FieldDef): Field = {
+    val field = new Field(fieldDef.width, fieldDef.height)
+    field.load(fieldDef)
+    field
+  }
+}
+
 /**
  * Created by portnov on 07.08.15.
  */
-
 case class Field(width : Int, height : Int) {
   var field = Array.fill[CellState.CellState](width, height){CellState.Empty}
 
   def refill() : Unit = {
     field = Array.fill[CellState.CellState](width, height){CellState.Empty}
+  }
+
+  def load(fd: FieldDef): Unit = {
+    fd.filled.foreach({
+      case CellDef(x,y) => this(x,y) = CellState.Full
+    })
   }
 
   def isValidCell(x : Int, y : Int) : Boolean = {
@@ -76,7 +90,7 @@ case class Field(width : Int, height : Int) {
   }
 }
 
-class Emulator private (val field : Field) {
+class Emulator (val field : Field) {
 
   case class StepResult(gameOver : Boolean, toLock : Boolean)
 
@@ -88,9 +102,7 @@ class Emulator private (val field : Field) {
   var score = 0
 
   private def load(fd : FieldDef) : Unit = {
-    fd.filled.foreach({
-      case CellDef(x,y) => field(x,y) = CellState.Full
-    })
+    field.load(fd)
     fieldDef = fd
   }
 

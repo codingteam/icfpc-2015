@@ -74,6 +74,8 @@ case class Field(width : Int, height : Int) {
 
 class Emulator private (field : Field) {
 
+  case class StepResult(gameOver : Boolean, toLock : Boolean)
+
   // Current unit should be in global field coordinates
   var currentUnit : UnitDef = _
 
@@ -190,30 +192,43 @@ class Emulator private (field : Field) {
     })
   }
 
-  def executeCommands(cmds : Seq[Command]) : Unit = {
+  def emulatorStep(cmd : Command) : StepResult = {
+    println(s"Execute: $cmd")
+    val oldUnit = currentUnit
+    val toLock = executeCommand(cmd)
+    var gameOver = false
+    if (toLock) {
+      println("Unit locked.")
+      lock(oldUnit)
+      val cleared = field.clearRows()
+      if (cleared > 0) {
+        println(s"$cleared rows cleared.")
+      }
+      val nextOk = spawnNextUnit()
+      println("Spawning next unit:")
+      MapPrinter.printUnit(currentUnit)
+      if (! nextOk) {
+        println("Game over.")
+        gameOver = true
+      }
+    }
+    return StepResult(gameOver, toLock)
+  }
+
+  // return number of actually executed commands
+  def emulate(cmds : Seq[Command]) : Int = {
+    var count = 0
     spawnNextUnit()
     println("First unit:")
     MapPrinter.printUnit(currentUnit)
     for (cmd <- cmds) {
-      println(s"Execute: $cmd")
-      val oldUnit = currentUnit
-      val toLock = executeCommand(cmd)
-      if (toLock) {
-        println("Unit locked.")
-        lock(oldUnit)
-        val cleared = field.clearRows()
-        if (cleared > 0) {
-          println(s"$cleared rows cleared.")
-        }
-        val nextOk = spawnNextUnit()
-        println("Spawning next unit:")
-        MapPrinter.printUnit(currentUnit)
-        if (! nextOk) {
-          println("Game over.")
-          return
-        }
+      val res = emulatorStep(cmd)
+      count += 1
+      if (res.gameOver) {
+        return count
       }
     }
+    return count
   }
 
   def printField() : Unit = {

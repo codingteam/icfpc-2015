@@ -176,6 +176,23 @@
 		}
 	}
 
+	function rotateUnitCW(unit) {
+		// mirror members and pivot about the y=0 line
+		var mirror = function (cell) { return {x: cell.x, y: -cell.y} }
+		var tinu = {
+			pivot: mirror(unit.pivot),
+			members: _.map(unit.members, mirror)
+		}
+
+		tinu = rotateUnitCCW(tinu)
+
+		// unmirror back
+		return {
+			pivot: mirror(tinu.pivot),
+			members: _.map(tinu.members, mirror)
+		}
+	}
+
 	function renderUnit(unit) {
 		var g = newSVG('g')
 

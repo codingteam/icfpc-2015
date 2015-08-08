@@ -16,7 +16,12 @@ Submissions
 
 Usage
 -----
+
+    # Run application for submission
     sbt "run -f filename.json [-print] [-p phrase1] [-p phrase2] ..." 
+
+    # Run The Visualizator
+    sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication"
 
 Team
 ----

@@ -2,6 +2,8 @@ package ru.org.codingteam.icfpc
 
 import ru.org.codingteam.icfpc.definitions.UnitDef
 
+import scala.collection.mutable.ListBuffer
+
 object CellState extends Enumeration {
   type CellState = Value
   val Empty, Full = Value
@@ -20,7 +22,13 @@ case class Turn(clockwise : Boolean) extends Command
 /**
  * Created by portnov on 07.08.15.
  */
+
+
 object Utils {
+
+  type Spell = (String, List[Command])
+  // Use radix tree instead?
+  type Spells = List[Spell]
 
   val t9 : Map[Command, List[Char]] =
     Map(Move(Direction.W) -> "p'!.03".toList,
@@ -36,12 +44,51 @@ object Utils {
       case (k, letters) => for (letter <- letters) yield (letter, k)
     }).toMap
 
+  def toSpell(str : String) : Spell = {
+    (str, decode(str))
+  }
+
+  val knownSpells : Spells =
+    List("ei!", "io! io!") map toSpell
+
   def decode(str : String) : List[Command] = {
     str.toList.map((c) => unt9.get(c).get)
   }
 
   def encodeSimple(cmds : Seq[Command]) : String = {
     cmds.toList.map((c) => t9.get(c).get(0)).mkString("")
+  }
+
+  def encode(cmds : Seq[Command]) : String = {
+
+    def filterSpells(prefix : Seq[Command], spells : Spells) : Spells = {
+      spells.filter(s => s._2.startsWith(prefix))
+    }
+
+    var result = ""
+    var buffer = new ListBuffer[Command]()
+    var currentSpells = knownSpells
+    for (cmd <- cmds) {
+      buffer += cmd
+      val bufstr = buffer.toList.mkString("")
+      println(s"Buffer: ${bufstr}")
+      val goodSpells = filterSpells(buffer, currentSpells)
+      println(s"Good spells: ${goodSpells}")
+      if (goodSpells.size == 1 && goodSpells(0)._2 == buffer.toList) {
+        result += goodSpells(0)._1
+        currentSpells = knownSpells
+        buffer.clear()
+      } else if (goodSpells.isEmpty) {
+        result += encodeSimple(buffer)
+        currentSpells = knownSpells
+        buffer.clear()
+      } else {
+
+      }
+      println(s"Result: $result")
+    }
+    result += encodeSimple(buffer)
+    return result
   }
 
   def evalString(filePath : String, commands : String, srcIdx : Int) : Unit = {

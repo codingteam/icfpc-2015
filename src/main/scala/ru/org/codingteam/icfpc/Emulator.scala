@@ -76,9 +76,9 @@ case class Field(width : Int, height : Int) {
   }
 }
 
-class Emulator private (val field : Field) {
+case class StepResult(gameOver : Boolean, toLock : Boolean)
 
-  case class StepResult(gameOver : Boolean, toLock : Boolean)
+class Emulator private (val field : Field) {
 
   // Current unit should be in global field coordinates
   var currentUnit : UnitDef = _

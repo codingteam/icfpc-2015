@@ -38,4 +38,5 @@ class Visualizator (board: Board) {
   private def renderScore(emulator: Emulator): Unit = {
     board.putScore(emulator.score)
   }
+
 }

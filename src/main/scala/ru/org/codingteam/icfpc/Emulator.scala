@@ -226,6 +226,37 @@ class Emulator (val field : Field) {
     currentUnit = cmd match {
                     case Move(direction) =>
                       mapUnit(currentUnit)(translateCoord(direction))
+                    case Turn(_) =>
+                      mapUnit(currentUnit)((cellX, cellY) => {
+                        case class R3Coord(x: Double, y: Double, z: Double)
+
+                        val pivot = currentUnit.pivot
+                        val pvtX = currentUnit.pivot.x
+                        val pvtY = currentUnit.pivot.y
+
+                        // center the pivot
+                        val u = cellX - pvtX
+                        val v: Double = cellY - pvtY
+
+                        // the parity of our scan position affects how we round to get into/from *R3
+                        val rounder = if (pvtY % 2 != 0) Math.ceil _ else Math.floor _
+
+                        // map to *R3, per Innchyn Her et al
+                        val x = u - rounder(v/2)
+                        val y = v
+                        val z = 0 - x - y
+
+                        // rotate
+                        val rotated = R3Coord(
+                          x = x      + y    + 0,
+                          y = 0      + y    + z,
+                          z = x      + 0    + z
+                        )
+
+                        // map back
+                        ((pvtX + rotated.x + rounder(rotated.y / 2)).toInt,
+                          (pvtY + rotated.y).toInt)
+                      })
                   }
     return ! check(currentUnit)
   }

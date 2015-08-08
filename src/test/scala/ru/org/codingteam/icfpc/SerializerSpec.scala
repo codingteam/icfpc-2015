@@ -1,7 +1,7 @@
 package ru.org.codingteam.icfpc
 
 import org.scalatest.{Matchers, FlatSpec}
-import ru.org.codingteam.icfpc.definitions.{UnitDef, CellDef, FieldDef}
+import ru.org.codingteam.icfpc.definitions.{OutputDef, UnitDef, CellDef, FieldDef}
 
 class SerializerSpec extends FlatSpec with Matchers {
 
@@ -31,5 +31,11 @@ class SerializerSpec extends FlatSpec with Matchers {
     )), id = 0, filled = Vector(), sourceLength = 100)
 
     assert(field === expected)
+  }
+
+  "The Serializer" should "serialize" in {
+    val output = OutputDef(0, 0, "", "")
+    val serialized = Serializer.serialize(output)
+    assert(serialized !== null)
   }
 }

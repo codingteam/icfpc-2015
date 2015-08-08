@@ -4,7 +4,7 @@ import java.awt.Color
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.Timer
 
-import ru.org.codingteam.icfpc.{Command, Emulator}
+import ru.org.codingteam.icfpc.{CellState, Command, Emulator}
 
 class Visualizator (emulator: Emulator, board: Board) {
 
@@ -25,8 +25,15 @@ class Visualizator (emulator: Emulator, board: Board) {
   }
 
   private def renderFilled(): Unit = {
-    for (cel <- emulator.fieldDef.filled) {
-      board.putCell(cel.y, cel.x, Color.YELLOW)
+    for (row <- 0 until emulator.field.height) {
+      for (col <- 0 until emulator.field.width) {
+        val color = if (emulator.field(col, row) == CellState.Full) {
+          Color.YELLOW
+        } else {
+          Color.WHITE
+        }
+        board.putCell(row, col, color)
+      }
     }
   }
 

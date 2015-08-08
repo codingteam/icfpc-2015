@@ -10,7 +10,7 @@ object VisualizatorApplication {
   def main(args: Array[String]): Unit = {
     val frame = new JFrame("Codingteam ICFPC 2015")
 
-    val emulator = Emulator("problem_1.json")
+    val emulator = Emulator("problem_2.json")
     val board = new Board(emulator.fieldDef.height, emulator.fieldDef.width)
     val visualizator = new Visualizator(emulator, board)
 

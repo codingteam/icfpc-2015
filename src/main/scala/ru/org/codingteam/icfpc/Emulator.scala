@@ -9,6 +9,10 @@ import ru.org.codingteam.icfpc.definitions.{FieldDef, CellDef, UnitDef}
 case class Field(width : Int, height : Int) {
   var field = Array.fill[CellState.CellState](width, height){CellState.Empty}
 
+  def refill() : Unit = {
+    field = Array.fill[CellState.CellState](width, height){CellState.Empty}
+  }
+
   def isValidCell(x : Int, y : Int) : Boolean = {
     (x >= 0) && (x < width) && (y >= 0) && (y < height)
   }
@@ -88,6 +92,11 @@ class Emulator private (val field : Field) {
       case CellDef(x,y) => field(x,y) = CellState.Full
     })
     fieldDef = fd
+  }
+
+  def reloadField() : Unit = {
+    field.refill()
+    load(fieldDef)
   }
 
   def initSource(srcIdx : Int) : Unit = {

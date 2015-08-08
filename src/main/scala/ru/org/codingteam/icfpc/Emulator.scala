@@ -6,22 +6,12 @@ import ru.org.codingteam.icfpc.definitions.{FieldDef, CellDef, UnitDef}
  * Created by portnov on 07.08.15.
  */
 
-object CellState extends Enumeration {
-  type CellState = Value
-  val Empty, Full = Value
-}
-
-object Direction extends Enumeration {
-  type Direction = Value
-  val E, W, SE, SW = Value
-}
-
-abstract class Command
-case class Move(direction : Direction.Direction) extends Command
-case class Turn(clockwise : Boolean) extends Command
-
 case class Field(width : Int, height : Int) {
-  var field = Array.ofDim[CellState.CellState](width, height)
+  var field = Array.fill[CellState.CellState](width, height){CellState.Empty}
+
+  def isValidCell(x : Int, y : Int) : Boolean = {
+    (x >= 0) && (x < width) && (y >= 0) && (y < height)
+  }
 
   def apply(x : Int, y : Int) : CellState.CellState = {
     return field(x)(y)
@@ -63,6 +53,22 @@ case class Field(width : Int, height : Int) {
       }
     }
     return count
+  }
+
+  def printField() : Unit = {
+    for (y <- List.range(0, height)) {
+      if (y % 2 == 1) {
+        print("  ")
+      }
+      for (x <- List.range(0, width)) {
+        if (field(x)(y) == CellState.Full) {
+          print("|XXX")
+        } else {
+          print("|   ")
+        }
+      }
+      print("|\n")
+    }
   }
 }
 
@@ -116,12 +122,24 @@ class Emulator private (field : Field) {
 
   // Return true if all members of unit are at empty cells
   def check(unit : UnitDef) : Boolean = {
-    unit.members.map({
-      case (CellDef(x,y)) => field(x,y) == CellState.Empty
-    }).forall((x) => x)
+    for (cell <- unit.members) {
+      cell match {
+        case CellDef(x,y) =>
+          if (! field.isValidCell(x,y)) {
+            println(s"($x,$y) is not valid cell.")
+            return false
+          }
+          if (field(x,y) != CellState.Empty) {
+            println(s"($x,$y) is not empty.")
+            return false
+          }
+      }
+    }
+    return true
   }
 
-  def spawnUnit(unit : UnitDef) : Unit = {
+  // return true if it is possible to spawn new unit
+  def spawnUnit(unit : UnitDef) : Boolean = {
     val unitSize = Utils.getUnitSize(unit)
     val cY = unit.members.map(_.y).max
     val minX = unit.members.map(_.x).min
@@ -129,9 +147,12 @@ class Emulator private (field : Field) {
     //println(s"$cX = (${field.width} - ${unitSize._1}) / 2 - $minX")
     val translated = translate(unit)(cX, cY)
     currentUnit = translated
+    return check(currentUnit)
   }
 
-  def spawnNextUnit(): Unit = {
+  // return true if it is possible to spawn next unit
+  // otherwise the game ends
+  def spawnNextUnit(): Boolean = {
     val unit = source.next()
     spawnUnit(unit)
   }
@@ -163,25 +184,40 @@ class Emulator private (field : Field) {
   }
 
   // Lock current unit: mark all corresponding cells as Full
-  def lock() : Unit = {
-    currentUnit.members.foreach({
+  def lock(unit : UnitDef) : Unit = {
+    unit.members.foreach({
       case CellDef(x,y) => field(x,y) = CellState.Full
     })
   }
 
   def executeCommands(cmds : Seq[Command]) : Unit = {
     spawnNextUnit()
+    println("First unit:")
+    MapPrinter.printUnit(currentUnit)
     for (cmd <- cmds) {
+      println(s"Execute: $cmd")
+      val oldUnit = currentUnit
       val toLock = executeCommand(cmd)
       if (toLock) {
-        lock()
+        println("Unit locked.")
+        lock(oldUnit)
         val cleared = field.clearRows()
         if (cleared > 0) {
-          print(s"$cleared rows cleared")
+          println(s"$cleared rows cleared.")
         }
-        spawnNextUnit()
+        val nextOk = spawnNextUnit()
+        println("Spawning next unit:")
+        MapPrinter.printUnit(currentUnit)
+        if (! nextOk) {
+          println("Game over.")
+          return
+        }
       }
     }
+  }
+
+  def printField() : Unit = {
+    field.printField()
   }
 
 }

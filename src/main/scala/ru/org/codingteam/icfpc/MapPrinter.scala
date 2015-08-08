@@ -38,6 +38,11 @@ object MapPrinter {
     }
   }
 
+  def printUnit(unit : UnitDef) : Unit = {
+    val size = Utils.getUnitSize(unit)
+    print2d(unit.members, size._1, size._2, "UUU")
+  }
+
   val testMap : FieldDef =
     FieldDef(1,Vector.empty,6,6,
       Vector(CellDef(2,0), CellDef(3,0), CellDef(2,5)),

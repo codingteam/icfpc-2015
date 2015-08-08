@@ -22,4 +22,15 @@ class EmulatorSpec extends FlatSpec with Matchers{
     val expected = Vector(CellDef(3,1), CellDef(5,1))
     assert(em.currentUnit.members === expected)
   }
+
+  "The Emulator" should "execute sequence of commands" in {
+    val em = Emulator("problem_0.json")
+    em.initSource(0)
+    val ei = Utils.decode("ei!")
+    val eiei = Stream.continually(ei.toStream).flatten.take(200)
+
+    em.executeCommands(eiei)
+    print("\n")
+    em.printField()
+  }
 }

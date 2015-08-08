@@ -1,15 +1,14 @@
 package ru.org.codingteam.icfpc
 
-import ru.org.codingteam.icfpc.definitions.FieldDef
-
+import ru.org.codingteam.icfpc.definitions.{FieldDef, OutputDef}
 import upickle.default._
 
 import scala.io.Source
 
 object Serializer {
 
-  def serialize(a: Any): String = {
-    ???
+  def serialize(t: OutputDef): String = {
+    write[OutputDef](t)
   }
 
   def deserialize(x: String): FieldDef = {

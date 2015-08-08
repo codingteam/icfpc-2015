@@ -1,6 +1,7 @@
 package ru.org.codingteam.icfpc
 
 import ru.org.codingteam.icfpc.definitions.{FieldDef, CellDef, UnitDef}
+import Direction._
 
 object Field {
 
@@ -171,6 +172,14 @@ class Emulator (val field : Field) {
     return true
   }
 
+  def anyNeighborNotEmpty(x: Int, y: Int): Boolean = {
+    val directions = Direction.values
+    val cells = directions.map(translateCoord(_)(x, y))
+    val result = cells.exists(c => !field.isValidCell(c._1, c._2) || field(c._1, c._2) == CellState.Full)
+    println(s"$x, $y have not empty neighbours: $result")
+    result
+  }
+
   // return true if it is possible to spawn new unit
   def spawnUnit(unit : UnitDef) : Boolean = {
     val unitSize = Utils.getUnitActualSize(unit)
@@ -195,8 +204,7 @@ class Emulator (val field : Field) {
 
   }
 
-  // Return true if the unit is locked as a result of command execution
-  def executeCommand(cmd : Command) : Boolean = {
+  def translateCoord(direction: Direction)(x: Int, y: Int) = {
     def swDeltaX(curY : Int) : Int = {
       if (curY % 2 == 1) {
         0
@@ -205,18 +213,19 @@ class Emulator (val field : Field) {
       }
     }
 
+    direction match {
+      case Direction.E => (x + 1, y)
+      case Direction.W => (x - 1, y)
+      case Direction.SE => (x + swDeltaX(y) + 1, y + 1)
+      case Direction.SW => (x + swDeltaX(y), y + 1)
+    }
+  }
+
+  // Return true if the unit is locked as a result of command execution
+  def executeCommand(cmd : Command) : Boolean = {
     currentUnit = cmd match {
                     case Move(direction) =>
-                      direction match {
-                        case Direction.E => translate(currentUnit)(+1,0)
-                        case Direction.W => translate(currentUnit)(-1,0)
-                        case Direction.SE => mapUnit(currentUnit)((x,y) =>
-                          (x+swDeltaX(y)+1, y+1)
-                        )
-                        case Direction.SW => mapUnit(currentUnit)((x,y) =>
-                          (x+swDeltaX(y), y+1)
-                        )
-                      }
+                      mapUnit(currentUnit)(translateCoord(direction))
                   }
     return ! check(currentUnit)
   }

@@ -71,11 +71,11 @@ object Solver {
     positions.map(state.moveCurrentUnit)
   }
 
-  private def getValidPositions(field: Field, unit: UnitDef): Seq[Position] = {
+  def getValidPositions(field: Field, unit: UnitDef): Seq[Position] = {
     val emulator = new Emulator(field)
     for { x <- 0.until(field.width)
           y <- 0.until(field.height)
-          if emulator.check(emulator.translate(unit)(x, y))
+          if emulator.check(emulator.translate(unit)(x, y)) && emulator.anyNeighborNotEmpty(x, y)
     } yield (x, y)
   }
 }

@@ -81,6 +81,8 @@ class Emulator private (field : Field) {
 
   var fieldDef : FieldDef = _
 
+  var score = 0
+
   private def load(fd : FieldDef) : Unit = {
     fd.filled.foreach({
       case CellDef(x,y) => field(x,y) = CellState.Full
@@ -95,6 +97,7 @@ class Emulator private (field : Field) {
   }
 
   private var source : Iterator[UnitDef] = _
+  private var previousUnitClearedLines = 0
 
   def mapUnit(unit : UnitDef)(f : (Int, Int) => (Int, Int)) : UnitDef = {
     UnitDef (
@@ -204,6 +207,11 @@ class Emulator private (field : Field) {
       if (cleared > 0) {
         println(s"$cleared rows cleared.")
       }
+
+      val moveScore = getMoveScore(oldUnit, cleared)
+      score += moveScore
+      previousUnitClearedLines = cleared
+
       val nextOk = spawnNextUnit()
       println("Spawning next unit:")
       MapPrinter.printUnit(currentUnit)
@@ -235,6 +243,21 @@ class Emulator private (field : Field) {
     field.printField()
   }
 
+  private def getMoveScore(unit: UnitDef, cleared: Int): Int = {
+    val size = unit.members.size
+    val ls = cleared
+    val ls_old = previousUnitClearedLines
+
+    // The following were taken from the spec.
+    val points = size + 100 * (1 + ls) * ls / 2
+    val lineBonus = if (ls_old > 0) {
+      (ls_old - 1) * points / 10
+    } else {
+      0
+    }
+
+    points + lineBonus
+  }
 }
 
 object Emulator {

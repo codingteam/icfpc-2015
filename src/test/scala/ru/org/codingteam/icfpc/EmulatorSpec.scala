@@ -34,4 +34,12 @@ class EmulatorSpec extends FlatSpec with Matchers{
     print("\n")
     em.printField()
   }
+
+  it should "return a score of 1 when locked the unit" in {
+    val em = Emulator("problem_0.json")
+    em.initSource(0)
+    val commands = List(Move(Direction.E), Move(Direction.E))
+    em.emulate(commands)
+    assert(em.score === 1)
+  }
 }

@@ -9,7 +9,7 @@ class Board extends JPanel {
   private var currentScore = 0
   private var rowsCount = 1
   private var colsCount = 1
-
+  private var isGameOver = false
 
   override def paintComponent(g: Graphics): Unit = {
     val g2 = g.asInstanceOf[Graphics2D]
@@ -18,6 +18,7 @@ class Board extends JPanel {
 
     renderCells(g2)
     renderScore(g2)
+    renderGameOver(g2)
   }
 
   private def renderCells(g2: Graphics2D): Unit = {
@@ -55,12 +56,29 @@ class Board extends JPanel {
     g2.drawString(text, 10, height)
   }
 
+  private def renderGameOver(g2: Graphics2D): Unit = {
+    if (isGameOver) {
+      g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16))
+
+      val text = "Game over"
+      val metrics = g2.getFontMetrics
+      val height = metrics.getHeight
+
+      g2.setColor(Color.RED)
+      g2.drawString(text, 10, 2 * height)
+    }
+  }
+
   def putCell(row: Int, col: Int, color: Color): Unit = {
     cells(row)(col) = color
   }
 
   def putScore(score: Int): Unit = {
     currentScore = score
+  }
+
+  def setGameOver(gameover : Boolean) = {
+    isGameOver = gameover
   }
 
   def putSize(rowsCount: Int, colsCount: Int): Unit = {

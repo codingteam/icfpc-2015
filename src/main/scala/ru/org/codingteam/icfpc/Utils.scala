@@ -40,6 +40,10 @@ object Utils {
     str.toList.map((c) => unt9.get(c).get)
   }
 
+  def encodeSimple(cmds : Seq[Command]) : String = {
+    cmds.toList.map((c) => t9.get(c).get(0)).mkString("")
+  }
+
   // Size of only unit itself, without empty margins
   def getUnitActualSize(unit : UnitDef) : (Int, Int) = {
     val maxX = (for (cell <- unit.members) yield cell.x).max

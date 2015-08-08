@@ -101,9 +101,9 @@ class Field(val width : Int, val height : Int) {
   }
 }
 
-class Emulator (val field : Field) {
+case class StepResult(gameOver : Boolean, toLock : Boolean)
 
-  case class StepResult(gameOver : Boolean, toLock : Boolean)
+class Emulator (val field : Field) {
 
   // Current unit should be in global field coordinates
   var currentUnit : UnitDef = _
@@ -125,7 +125,7 @@ class Emulator (val field : Field) {
   def initSource(srcIdx : Int) : Unit = {
     val seed = fieldDef.sourceSeeds(srcIdx)
     val prng = new PRNG(seed)
-    source = prng.map((i) => fieldDef.units(i % fieldDef.units.size))
+    source = prng.map((i) => fieldDef.units(i % fieldDef.units.size)).take(fieldDef.sourceLength)
   }
 
   private var source : Iterator[UnitDef] = _
@@ -190,8 +190,13 @@ class Emulator (val field : Field) {
   // return true if it is possible to spawn next unit
   // otherwise the game ends
   def spawnNextUnit(): Boolean = {
+    if (source.hasNext) {
     val unit = source.next()
     spawnUnit(unit)
+    } else {
+      return false
+  }
+
   }
 
   // Return true if the unit is locked as a result of command execution

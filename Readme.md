@@ -40,8 +40,10 @@ Team members in alphabetical order:
 - [Minoru][minoru]
 - [portnov][]
 - [rexim][]
+- [ulidtko][]
 
 [fornever]: https://github.com/ForNeVeR
 [minoru]: https://github.com/Minoru
 [portnov]: https://github.com/portnov
 [rexim]: https://github.com/rexim
+[ulidtko]: https://github.com/ulidtko

@@ -1,10 +1,8 @@
 package ru.org.codingteam.icfpc.visual
 
 import java.awt.Color
-import java.awt.event.{ActionEvent, ActionListener}
-import javax.swing.Timer
 
-import ru.org.codingteam.icfpc.{CellState, Command, Emulator}
+import ru.org.codingteam.icfpc.{CellState, Emulator}
 
 class Visualizator (emulator: Emulator, board: Board) {
 
@@ -13,6 +11,7 @@ class Visualizator (emulator: Emulator, board: Board) {
     clearBoard()
     renderFilled()
     renderCurrentUnit()
+    renderScore()
     board.repaint()
   }
 
@@ -44,5 +43,9 @@ class Visualizator (emulator: Emulator, board: Board) {
         board.putCell(cel.y, cel.x, Color.BLUE)
       }
     }
+  }
+
+  private def renderScore(): Unit = {
+    board.score = emulator.score
   }
 }

@@ -1,11 +1,12 @@
 package ru.org.codingteam.icfpc.visual
 
-import java.awt.{Color, Graphics2D, Graphics}
+import java.awt.{Font, Color, Graphics2D, Graphics}
 import javax.swing.JPanel
 
 
 class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
   private val cells = Array.fill(rowsCount, colsCount)(Color.WHITE)
+  var score = 0
 
   override def paintComponent(g: Graphics): Unit = {
     val g2 = g.asInstanceOf[Graphics2D]
@@ -13,6 +14,7 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
     g2.fillRect(0, 0, getWidth, getHeight)
 
     renderCells(g2)
+    renderScore(g2)
   }
 
 
@@ -53,6 +55,17 @@ class Board(val rowsCount: Int, val colsCount: Int) extends JPanel {
 
       }
     }
+  }
+
+  private def renderScore(g2: Graphics2D): Unit = {
+    g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16))
+
+    val text = s"Score: $score"
+    val metrics = g2.getFontMetrics
+    val height = metrics.getHeight
+
+    g2.setColor(Color.ORANGE)
+    g2.drawString(text, 10, height)
   }
 
   def putCell(row: Int, col: Int, color: Color): Unit = {

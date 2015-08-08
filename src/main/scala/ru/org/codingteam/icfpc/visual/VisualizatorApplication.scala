@@ -1,9 +1,9 @@
 package ru.org.codingteam.icfpc.visual
 
+import java.awt.Dimension
 import java.awt.event.{KeyEvent, KeyListener}
-import java.awt.{Color, Dimension}
 import java.io.File
-import javax.swing.{JFileChooser, WindowConstants, JFrame}
+import javax.swing.{JFileChooser, JFrame, WindowConstants}
 
 import ru.org.codingteam.icfpc._
 
@@ -49,6 +49,8 @@ object VisualizatorApplication {
                     case KeyEvent.VK_E => process(Move(Direction.E))
                     case KeyEvent.VK_S => process(Move(Direction.SW))
                     case KeyEvent.VK_D => process(Move(Direction.SE))
+                    case KeyEvent.VK_COMMA => process(Turn(true))
+                    case KeyEvent.VK_PERIOD => process(Turn(false))
                     case KeyEvent.VK_O => {
                       val fileChooser = new JFileChooser()
                       fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")))

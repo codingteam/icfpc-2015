@@ -9,12 +9,23 @@ object Field {
     field.load(fieldDef)
     field
   }
+
+  def from(emulator: Emulator): Field = from(emulator.field)
+  def from(field: Field): Field = {
+    val result = new Field(field.width, field.height)
+    result.field = field.field.clone()
+    for (x <- 0.until(field.width)) {
+      result.field(x) = result.field(x).clone()
+    }
+
+    result
+  }
 }
 
 /**
  * Created by portnov on 07.08.15.
  */
-case class Field(width : Int, height : Int) {
+class Field(val width : Int, val height : Int) {
   var field = Array.fill[CellState.CellState](width, height){CellState.Empty}
 
   def refill() : Unit = {
@@ -284,7 +295,7 @@ class Emulator (val field : Field) {
 object Emulator {
   def apply(path : String) : Emulator = {
     val fd = Serializer.fromFile(path)
-    val field = Field(fd.width, fd.height)
+    val field = new Field(fd.width, fd.height)
     val em = new Emulator(field)
     em.load(fd)
     return em

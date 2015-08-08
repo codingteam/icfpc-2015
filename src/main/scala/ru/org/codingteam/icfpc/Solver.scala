@@ -7,15 +7,15 @@ object Solver {
   type Position = (Int, Int)
 
   case class SolverState(field: Field,
-                         units: Stream[UnitDef]) {
+                         units: Vector[UnitDef]) {
 
     def currentUnit = units.head
     def moveCurrentUnit(position: Position): SolverState = {
-      val emulator = new Emulator(field)
+      val emulator = new Emulator(Field.from(field))
       val unit = emulator.translate(currentUnit)(position._1, position._2)
       emulator.lock(unit)
 
-      this.copy(field = emulator.field, units = units.tail)
+      this.copy(field = Field.from(emulator), units = units.tail)
     }
   }
 

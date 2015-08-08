@@ -46,6 +46,14 @@ class Emulator private (field : Field) {
     fieldDef = fd
   }
 
+  def initSource(srcIdx : Int) : Unit = {
+    val seed = fieldDef.sourceSeeds(srcIdx)
+    val prng = new PRNG(seed)
+    source = prng.map((i) => fieldDef.units(i % fieldDef.units.size))
+  }
+
+  private var source : Iterator[UnitDef] = _
+
   def mapUnit(unit : UnitDef)(f : (Int, Int) => (Int, Int)) : UnitDef = {
     UnitDef (
       unit.members.map({
@@ -89,6 +97,11 @@ class Emulator private (field : Field) {
     currentUnit = translated
   }
 
+  def spawnNextUnit(): Unit = {
+    val unit = source.next()
+    spawnUnit(unit)
+  }
+
   // Return true if the unit is locked as a result of command execution
   def executeCommand(cmd : Command) : Boolean = {
     def swDeltaX(curY : Int) : Int = {
@@ -120,6 +133,17 @@ class Emulator private (field : Field) {
     currentUnit.members.foreach({
       case CellDef(x,y) => field(x,y) = CellState.Full
     })
+  }
+
+  def executeCommands(cmds : Seq[Command]) : Unit = {
+    spawnNextUnit
+    for (cmd <- cmds) {
+      val toLock = executeCommand(cmd)
+      if (toLock) {
+        lock
+        spawnNextUnit
+      }
+    }
   }
 
 }

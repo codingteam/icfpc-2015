@@ -9,7 +9,7 @@ import scala.io.Source
  */
 object MapPrinter {
 
-  private def print2d(arr : Seq[CellDef], width : Int, height : Int, mark : String) : Unit = {
+  private def print2d(arr : Seq[CellDef], width : Int, height : Int, mark : String, mbPivot : Option[CellDef]) : Unit = {
     for (y <- List.range(0, height)) {
       if (y % 2 == 1) {
         print("  ")
@@ -17,6 +17,8 @@ object MapPrinter {
       for (x <- List.range(0, width)) {
         if (arr.indexOf(CellDef(x, y)) >= 0) {
           print("|" concat  mark)
+        } else if (Some(CellDef(x,y)) == mbPivot) {
+          print("| o ")
         } else {
           print("|   ")
         }
@@ -27,20 +29,20 @@ object MapPrinter {
 
   def printMap(fd : FieldDef) : Unit = {
 
-    print2d(fd.filled, fd.width, fd.height, "XXX")
+    print2d(fd.filled, fd.width, fd.height, "XXX", None)
 
     for (unit <- fd.units) {
       println("\nUnit:")
       Utils.getUnitSize(unit) match {
         case (width, height) =>
-          print2d(unit.members, width, height, "UUU")
+          print2d(unit.members, width, height, "UUU", Some(unit.pivot))
       }
     }
   }
 
   def printUnit(unit : UnitDef) : Unit = {
     val size = Utils.getUnitSize(unit)
-    print2d(unit.members, size._1, size._2, "UUU")
+    print2d(unit.members, size._1, size._2, "UUU", Some(unit.pivot))
   }
 
   val testMap : FieldDef =

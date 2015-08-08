@@ -31,12 +31,8 @@ case class Field(width : Int, height : Int) {
   }
 
   def clearRow(y0 : Int) : Unit = {
-    // Mark y0 row as empty
-    for (x <- List.range(0, width)) {
-      field(x)(y0) = CellState.Empty
-    }
-    // Copy values of cells with y < y0 from cell at top
-    for (y <- List.range(1, y0)) {
+    // Copy values of cells with y <= y0 from cell at top
+    for (y <- List.range(y0, 0, -1)) {
       for (x <- List.range(0, width)) {
         field(x)(y) = field(x)(y-1)
       }

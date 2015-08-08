@@ -44,6 +44,17 @@ object Utils {
     cmds.toList.map((c) => t9.get(c).get(0)).mkString("")
   }
 
+  def evalString(filePath : String, commands : String, srcIdx : Int) : Unit = {
+    val em = Emulator(filePath)
+    em.initSource(srcIdx)
+    val cmds = Utils.decode(commands)
+    val cmdsCnt = em.emulate(cmds)
+    println(s"Executed $cmdsCnt commands")
+    print("\n")
+    em.printField()
+    println(s"\nScore: ${em.score}")
+  }
+
   // Size of only unit itself, without empty margins
   def getUnitActualSize(unit : UnitDef) : (Int, Int) = {
     val maxX = (for (cell <- unit.members) yield cell.x).max

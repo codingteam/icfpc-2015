@@ -20,7 +20,11 @@ object VisualizatorApplication {
   def main(args: Array[String]): Unit = {
     val frame = new JFrame("Codingteam ICFPC 2015")
 
-    var emulator = loadProblem("problem_0.json")
+    println(args.toList)
+
+    val filePath = if (args.length == 1) args(0) else "problem_0.json"
+
+    var emulator = loadProblem(filePath)
     val board = new Board
     val visualizator = new Visualizator(board)
 
@@ -52,7 +56,12 @@ object VisualizatorApplication {
                       if (returnVal == JFileChooser.APPROVE_OPTION) {
                         val file = fileChooser.getSelectedFile
                         emulator = loadProblem(file.getAbsolutePath)
+                        commands.clear()
                       }
+                      StepResult(false, false)
+                    }
+                    case KeyEvent.VK_P => {
+                      println(Utils.encodeSimple(commands.toList))
                       StepResult(false, false)
                     }
                     case _ => StepResult(false, false)

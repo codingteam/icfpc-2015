@@ -30,6 +30,40 @@ case class Field(width : Int, height : Int) {
   def update(x : Int, y : Int, st : CellState.CellState): Unit = {
     field(x)(y) = st
   }
+
+  def isRowFilled(y : Int) : Boolean = {
+    (for (x <- List.range(0, width))
+      yield field(x)(y)).forall(_ == CellState.Full)
+  }
+
+  def clearRow(y0 : Int) : Unit = {
+    // Mark y0 row as empty
+    for (x <- List.range(0, width)) {
+      field(x)(y0) = CellState.Empty
+    }
+    // Copy values of cells with y < y0 from cell at top
+    for (y <- List.range(1, y0)) {
+      for (x <- List.range(0, width)) {
+        field(x)(y) = field(x)(y-1)
+      }
+    }
+    // Mark 0th row as empty
+    for (x <- List.range(0, width)) {
+      field(x)(0) = CellState.Empty
+    }
+  }
+
+  // Return number of cleared rows
+  def clearRows() : Int = {
+    var count = 0
+    for (y <- List.range(0, height)) {
+      if (isRowFilled(y)) {
+        count += 1
+        clearRow(y)
+      }
+    }
+    return count
+  }
 }
 
 class Emulator private (field : Field) {
@@ -136,12 +170,16 @@ class Emulator private (field : Field) {
   }
 
   def executeCommands(cmds : Seq[Command]) : Unit = {
-    spawnNextUnit
+    spawnNextUnit()
     for (cmd <- cmds) {
       val toLock = executeCommand(cmd)
       if (toLock) {
-        lock
-        spawnNextUnit
+        lock()
+        val cleared = field.clearRows()
+        if (cleared > 0) {
+          print(s"$cleared rows cleared")
+        }
+        spawnNextUnit()
       }
     }
   }

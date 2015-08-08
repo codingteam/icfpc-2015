@@ -259,7 +259,7 @@ class Emulator private (val field : Field) {
 
     // The following were taken from the spec.
     val points = size + 100 * (1 + ls) * ls / 2
-    val lineBonus = if (ls_old > 0) {
+    val lineBonus = if (ls_old > 1) {
       (ls_old - 1) * points / 10
     } else {
       0

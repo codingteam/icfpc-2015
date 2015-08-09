@@ -82,7 +82,7 @@ object LocalSolver {
             }
         }
 
-        if(solution == null) None else Some(solution.commands)
+        if(solution == null) None else Some(solution.commands.reverse)
     }
 
     /* Distance between two cells */

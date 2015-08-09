@@ -62,7 +62,8 @@ executable simulator
                        unordered-containers,
                        bytestring,
                        split,
-                       vector
+                       vector,
+                       optparse-applicative
   
   -- Directories containing source files.
   hs-source-dirs:      src

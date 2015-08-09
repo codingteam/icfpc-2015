@@ -12,7 +12,7 @@ class Visualizator (board: Board) {
 
     renderFull(emulator)
     renderCurrentUnit(emulator)
-    renderScore(emulator)
+    renderStats(emulator)
     board.repaint()
   }
 
@@ -37,8 +37,8 @@ class Visualizator (board: Board) {
     }
   }
 
-  private def renderScore(emulator: Emulator): Unit = {
+  private def renderStats(emulator: Emulator): Unit = {
     board.putScore(emulator.score)
+    board.putUnits(emulator.units)
   }
-
 }

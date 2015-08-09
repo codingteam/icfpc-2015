@@ -127,6 +127,7 @@ class Emulator (val field : Field) {
   var fieldDef : FieldDef = _
 
   var score = 0
+  var units = 0
 
   // Indicates that the Emulator can be in an inconsistent state
   var gameOver = false
@@ -232,8 +233,11 @@ class Emulator (val field : Field) {
   def spawnUnit(unit : UnitDef) : Boolean = {
     val (cX, cY) = getSpawnPositionShifts(unit)
     val translated = translate(unit)(cX, cY)
+
     currentUnit = translated
-    return check(currentUnit)
+    units += 1
+
+    check(currentUnit)
   }
 
   // return true if it is possible to spawn next unit
@@ -248,12 +252,14 @@ class Emulator (val field : Field) {
 
   }
 
-  def rotateCoord(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) = {
+  def rotateCoord(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) =
+    rotate(currentUnit.pivot)(clockwise)(cellX, cellY)
+
+  def rotate(pivot: CellDef)(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) = {
     case class R3Coord(x: Double, y: Double, z: Double)
 
-    val pivot = currentUnit.pivot
-    val pvtX = currentUnit.pivot.x
-    val pvtY = currentUnit.pivot.y
+    val pvtX = pivot.x
+    val pvtY = pivot.y
 
     val clockwiseCoeff = if (clockwise) -1 else 1
 
@@ -285,7 +291,7 @@ class Emulator (val field : Field) {
     case Move(direction) =>
       mapUnit(unit)(Emulator.translateCoord(direction))
     case Turn(clockwise) =>
-      mapUnit(unit)(rotateCoord(clockwise))
+      mapUnit(unit)(rotate(unit.pivot)(clockwise))
     }
 
   // Return true if the unit will be locked as a result of command execution

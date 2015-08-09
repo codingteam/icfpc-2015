@@ -5,27 +5,32 @@ import Control.Applicative
 
 import Options.Applicative
 
+import Network.Socket
 import Network.Shed.Httpd
 
 import Core.GameModel
 
 
-opts :: Parser (String, String)
+opts :: Parser (String, Int)
 opts = (,)
 	<$> strOption (mconcat
 		[ long "host"
 		, short 'l'
+		, value "localhost"
 		, metavar "ADDR"
 		, help "hostname or IP address to bind to"
 		])
-	<*> strOption (mconcat
-		[ long "port"
-		, short 'p'
-		, metavar "PORT"
+	<*> argument auto (mconcat
+		[ metavar "PORT"
 		, help "port number to listen on"
 		])
 
 main :: IO ()
 main = do
-	(host, port) <- execParser $ info (helper <*> opts) mempty
-	print (host, port)
+	(_, port) <- execParser $ info (helper <*> opts) mempty
+	initServerBind port iNADDR_ANY serve
+
+
+serve :: Request -> IO Response
+serve _ = return Response {resCode=200, resHeaders=[], resBody="hello http\n"}
+

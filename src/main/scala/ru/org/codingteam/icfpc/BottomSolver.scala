@@ -64,13 +64,27 @@ object BottomSolver {
       return None
     }
 
+    def compare(xAsc : Boolean)(p1: Position, p2 : Position) : Boolean = {
+      if (p1._2 == p2._2) {
+        if (xAsc) {
+          p1._1 < p2._1
+        } else {
+          p1._1 > p2._1
+        }
+      } else {
+        p1._2 > p2._2
+      }
+    }
+
     var result = Vector[SolverState]()
     var state = start
+    var count = 0
     while (!goalAchieved(state)) {
+      count += 1
       val unit = state.currentUnit.get
       val positions = getBottomUnitPositions(state, unit)
       //println(s"target positions: ${positions.toList}")
-      val bottomest = positions.sortWith(_._2 > _._2).headOption
+      val bottomest = positions.sortWith(compare(count % 2 == 0)).headOption
       //println(s"target position: $bottomest")
       bottomest match {
         case Some(b) =>

@@ -34,9 +34,9 @@ data GameState = GameState {
   , ended  :: Bool
   } deriving (Show, Eq)
 
-data MoveDirection = E | W | SE | SW deriving (Show, Eq)
-data TurnDirection = CW | CCW deriving (Show, Eq)
-data Command = MoveDirection | TurnDirection deriving (Show, Eq)
+data MoveDirection = E | W | SE | SW deriving (Show, Eq, Ord)
+data TurnDirection = CW | CCW deriving (Show, Eq, Ord)
+data Command = Move MoveDirection | Turn TurnDirection deriving (Show, Eq, Ord)
 
 data GameInput = GameInput {
     gameiId           :: Int

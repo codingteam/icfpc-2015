@@ -10,6 +10,7 @@ import Data.ByteString.Lazy.Char8 (pack, unpack, empty)
 import Data.Aeson (encode, decode, eitherDecode)
 import Data.Maybe
 import Options.Applicative
+import Text.Printf (printf)
 
 simulate :: [Char] -> Maybe Int -> GameInput -> [GameState]
 simulate commands index ginput = [GameState {}]
@@ -40,12 +41,27 @@ runOpts (SimOptions file step) = do
       printBoard board
     Nothing -> fail "Failed to load problem file"
 
+-- Just for a debug
 printBoard :: Board -> IO ()
-printBoard board =
-  V.mapM_ (\v ->
-          V.mapM_ (\f -> let c = if filled f then 'X' else '@' in putChar c) v
-          >> putStr "\n") $ boardFields board
+printBoard board = do
+  let width  = boardWidth board
+      height = boardHeight board
+      fields = boardFields board
+
+  printf "Size: %dx%d\n" width height
+
+  putStr "   "
+  imapM_ (\x _ -> printf "%3.d" x) $ fields V.! 0
+  putStr "\n\n"
+  
+  imapM_ (\y v -> printf "%-3.d" y >>
+          V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
+          >> putStr "\n") fields
        
+  where
+    imapM_ :: Monad m => (Int -> a -> m b) -> V.Vector a -> m ()
+    imapM_ fn v = mapM_ (uncurry fn) $ zip [0 .. V.length v] (V.toList v)
+  
 
 main :: IO ()
 main = execParser opts >>= runOpts

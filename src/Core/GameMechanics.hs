@@ -19,8 +19,8 @@ initBoard g = let w  = 2 + gameiWidth g
                   h  = 2 + gameiHeight g
                   filled = gameiFilled g
                   vv = V.fromList [ vn
-                                  | y <- [-1..(h - 1)],
-                                    vn <- [ V.fromList [ Field (isFilled (w - 2, h - 2) (x, y)) (Cell x y) | x <- [-1..(w - 1)] ] ]
+                                  | y <- [-1..(h - 2)],
+                                    vn <- [ V.fromList [ Field (isFilled (w - 2, h - 2) (x, y)) (Cell x y) | x <- [-1..(w - 2)] ] ]
                                   ]
               in
                Board (applyFilled vv [ (yy, cells)

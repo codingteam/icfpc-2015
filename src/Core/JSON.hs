@@ -25,6 +25,10 @@ instance FromJSON Unit where
     fieldLabelModifier = id
     }
 
+-- instance FromJSON Unit where
+--   parseJSON unit = do
+    
+
 instance FromJSON GameInput where
   parseJSON = genericParseJSON defaultOptions {
     fieldLabelModifier = jsonModifier "gamei"

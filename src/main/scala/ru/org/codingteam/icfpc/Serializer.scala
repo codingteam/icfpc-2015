@@ -7,8 +7,8 @@ import scala.io.Source
 
 object Serializer {
 
-  def serialize(t: OutputDef): String = {
-    write[OutputDef](t)
+  def serialize(t: Seq[OutputDef]): String = {
+    write[Seq[OutputDef]](t)
   }
 
   def deserialize(x: String): FieldDef = {

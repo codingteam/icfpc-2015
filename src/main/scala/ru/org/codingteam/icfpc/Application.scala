@@ -39,17 +39,20 @@ object Application extends App {
     Serializer.deserialize(content)
   }
 
-  def solve(field: FieldDef, phrases: Set[String], print: Boolean): OutputDef = {
+  def solve(field: FieldDef, phrases: Set[String], print: Boolean): Seq[OutputDef] = {
     if (print) {
       MapPrinter.printMap(field)
     }
 
-    OutputDef(0, 0, "", "")
+    field.sourceSeeds map { seed =>
+      val commands = Strategist.solution(field, seed)
+      OutputDef(field.id, seed, null, Utils.encode(commands))
+    }
   }
 
   val arguments = parseArgs()
   arguments.fields foreach { field =>
-    val solution = solve(field, arguments.phrases, arguments.print)
-    println(Serializer.serialize(solution) + "\n")
+    val solutions = solve(field, arguments.phrases, arguments.print)
+    println(Serializer.serialize(solutions) + "\n")
   }
 }

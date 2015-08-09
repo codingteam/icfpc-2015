@@ -34,7 +34,7 @@ class SerializerSpec extends FlatSpec with Matchers {
   }
 
   "The Serializer" should "serialize" in {
-    val output = OutputDef(0, 0, "", "")
+    val output = List(OutputDef(0, 0, "", ""))
     val serialized = Serializer.serialize(output)
     assert(serialized !== null)
   }

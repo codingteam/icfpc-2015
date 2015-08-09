@@ -42,22 +42,27 @@ runOpts (SimOptions file step) = do
     Nothing -> fail "Failed to load problem file"
 
 -- Just for a debug
+-- Didn't get why it doesn't print '0'
 printBoard :: Board -> IO ()
 printBoard board = do
-  let width  = boardWidth board
-      height = boardHeight board
+  let width  = boardWidth board - 2
+      height = boardHeight board - 2
       fields = boardFields board
 
-  printf "Size: %dx%d\n" width height
+  printf "Size: %dx%d\n\n" width height
 
+  let v0 = fields V.! 0
+      
   putStr "   "
-  imapM_ (\x _ -> printf "%3.d" x) $ fields V.! 0
+  imapM_ (\x _ -> printf "%3.d" (x - 1)) $ V.slice 0 (V.length v0) v0
   putStr "\n\n"
   
-  imapM_ (\y v -> printf "%-3.d" y >>
+  imapM_ (\y v -> printf "%-3.d" (y - 1) >>
           V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
-          >> putStr "\n") fields
-       
+          >> putStr "\n") $ V.slice 0 (V.length fields) fields
+
+  putStr "\n     ------------------------------------ \n\n"
+    
   where
     imapM_ :: Monad m => (Int -> a -> m b) -> V.Vector a -> m ()
     imapM_ fn v = mapM_ (uncurry fn) $ zip [0 .. V.length v] (V.toList v)

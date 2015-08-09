@@ -39,7 +39,7 @@ data TurnDirection = CW | CCW deriving (Show, Eq, Ord)
 data Command = Move MoveDirection
              | Turn TurnDirection
              | Ignore
-             | Incorrect -- facing this command game ends and score becomes 0
+             | Invalid -- facing this command game ends and score becomes 0
              deriving (Show, Eq, Ord)
 
 data GameInput = GameInput {

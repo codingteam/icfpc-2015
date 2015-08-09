@@ -202,7 +202,7 @@ class Emulator (val field : Field) {
    * Translates unit pivot to coordinates and checks every its piece.
    */
   def anyNeighborNotEmpty(unit: UnitDef, x: Int, y: Int): Boolean = {
-    val placedUnit = translate(unit)(x, y)
+    val placedUnit = translate(unit)(x - unit.pivot.x, y - unit.pivot.y)
     placedUnit.members.forall(c => anyNeighborNotEmpty(c.x, c.y))
   }
 

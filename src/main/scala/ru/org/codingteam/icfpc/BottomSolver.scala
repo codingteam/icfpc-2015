@@ -16,7 +16,8 @@ object BottomSolver {
     def moveCurrentUnit(position: Position): SolverState = {
       val emulator = new Emulator(Field.from(field))
 
-      val unit = emulator.translate(currentUnit.get)(position._1, position._2)
+      val pivot = currentUnit.get.pivot
+      val unit = emulator.translate(currentUnit.get)(position._1 - pivot.x, position._2 - pivot.y)
       emulator.lock(unit)
 
       SolverState(
@@ -31,7 +32,7 @@ object BottomSolver {
         val emulator = new Emulator(field)
         for {x <- 0.until(field.width)
              y <- 0.until(field.height)} {
-          if (emulator.check(emulator.translate(unit)(x, y))) {
+          if (emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y))) {
             return true
           }
         }
@@ -66,7 +67,8 @@ object BottomSolver {
       val unit = state.currentUnit.get
       val emulator = new Emulator(state.field)
       val positions = getBottomPositions(state).filter({ case (x, y) =>
-        emulator.check(emulator.translate(unit)(x, y)) && emulator.anyNeighborNotEmpty(unit, x, y)
+        emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y)) &&
+          emulator.anyNeighborNotEmpty(unit, x, y)
       })
       val bottomest = positions.sortWith(_._2 < _._2).headOption
       bottomest match {
@@ -87,11 +89,4 @@ object BottomSolver {
   }
 
   def goalAchieved(state: SolverState): Boolean = state.anyRowFilled || !state.canPlaceUnit
-
-  def getValidPositions(field: Field, unit: UnitDef): Stream[Position] = {
-    val emulator = new Emulator(field)
-    val coords = (for {x <- 0.until(field.width)
-                       y <- 0.until(field.height)} yield (x, y)).toStream
-    coords.filter({ case (x, y) => emulator.check(emulator.translate(unit)(x, y)) && emulator.anyNeighborNotEmpty(x, y) })
-  }
 }

@@ -31,7 +31,7 @@ class StrategistSpec extends FlatSpec with Matchers {
   it should "solve problem_8.json" in {
     val string = Source.fromFile("problem_8.json").getLines().mkString("\n")
     val problem = Serializer.deserialize(string)
-    val solution = Strategist.solution(problem, 28581)
+    val solution = Strategist.solution(problem, problem.sourceSeeds.head)
     assert(solution.nonEmpty)
   }
 }

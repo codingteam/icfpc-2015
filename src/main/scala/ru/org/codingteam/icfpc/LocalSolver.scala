@@ -1,6 +1,6 @@
 package ru.org.codingteam.icfpc
 
-import ru.org.codingteam.icfpc.Solver.Position
+import ru.org.codingteam.icfpc.BottomSolver.Position
 import ru.org.codingteam.icfpc.definitions.UnitDef
 
 import scala.collection.mutable.{HashSet, PriorityQueue}

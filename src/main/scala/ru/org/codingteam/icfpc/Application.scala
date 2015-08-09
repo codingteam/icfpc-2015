@@ -12,7 +12,8 @@ case class Arguments(fields: Seq[FieldDef],
                      memoryLimit: Int,
                      cores: Int,
                      phrases: Set[String],
-                     print: Boolean)
+                     print: Boolean,
+                     scoresFile : Option[String])
 
 object Application extends App {
 
@@ -31,9 +32,10 @@ object Application extends App {
     val cores = Integer.parseInt(arguments.get("-c").map(_.head).getOrElse("8"))
     val phrases = arguments.getOrElse("-p", List()).toList
     val print = arguments.get("-print")
+    val scoresFile = arguments.get("-scores").map(_.head)
 
     val fields = (filenames map parseFile).toVector
-    Arguments(fields, timeLimit.seconds, memory, cores, Set(phrases: _*), print.isDefined)
+    Arguments(fields, timeLimit.seconds, memory, cores, Set(phrases: _*), print.isDefined, scoresFile)
   }
 
   def parseFile(fileName: String): FieldDef = {
@@ -41,20 +43,32 @@ object Application extends App {
     Serializer.deserialize(content)
   }
 
-  def solve(field: FieldDef, phrases: Set[String], print: Boolean): Seq[OutputDef] = {
+  def solve(field: FieldDef, phrases: Set[String], print: Boolean, mbScores : Option[String]): Seq[OutputDef] = {
     if (print) {
       MapPrinter.printMap(field)
     }
 
     field.sourceSeeds map { seed =>
       val commands = Strategist.solution(field, seed)
+      mbScores match {
+        case Some(scoresFile) =>
+          val maxOldScore = Utils.getScore(scoresFile, field.id).max
+          val emulator = new Emulator(Field.from(field))
+          emulator.load(field)
+          emulator.initSourceWithSeed(seed)
+          emulator.emulate(commands)
+          val newScore = emulator.score
+          println(s"Seed $seed: Maximum old score: $maxOldScore; new score: $newScore")
+
+        case None =>
+      }
       OutputDef(field.id, seed, "command" + new Date().getTime, Utils.encode(commands))
     }
   }
 
   val arguments = parseArgs()
   arguments.fields foreach { field =>
-    val solutions = solve(field, arguments.phrases, arguments.print)
+    val solutions = solve(field, arguments.phrases, arguments.print, arguments.scoresFile)
     println(Serializer.serialize(solutions) + "\n")
   }
 }

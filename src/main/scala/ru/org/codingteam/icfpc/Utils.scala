@@ -104,7 +104,7 @@ object Utils {
     return result
   }
 
-  def evalString(filePath : String, commands : String, srcIdx : Int) : Unit = {
+  def evalString(filePath : String, commands : String, srcIdx : Int) : Int = {
     val em = Emulator(filePath)
     em.initSource(srcIdx)
     val cmds = Utils.decode(commands)
@@ -113,6 +113,7 @@ object Utils {
     print("\n")
     em.printField()
     println(s"\nScore: ${em.score}")
+    return em.score
   }
 
   def readScores(filePath : String) : List[Score] = {

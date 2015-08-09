@@ -2,17 +2,18 @@ package ru.org.codingteam.icfpc.visual.controller
 
 import java.awt.event.{KeyEvent, KeyListener}
 import java.io.File
-import javax.swing.{JFileChooser, JFrame}
+import javax.swing.JFileChooser
 
 import ru.org.codingteam.icfpc._
-import ru.org.codingteam.icfpc.visual.{Board, Visualizator}
+import ru.org.codingteam.icfpc.visual.Visualizator
 
 import scala.collection.mutable.ListBuffer
 
-class ManualController(frame: JFrame, board: Board, filePath: String) extends Controller {
+class ManualController(visualizator: Visualizator, filePath: String) extends Controller {
   private val commands = new ListBuffer[Command]()
   private var emulator = loadProblem(filePath)
-  private val visualizator = new Visualizator(board).visualizeState(emulator)
+
+  visualizator.visualizeState(emulator)
 
   override def title: String = "Manual Control — Codingteam ICFPC 2015"
 
@@ -37,7 +38,7 @@ class ManualController(frame: JFrame, board: Board, filePath: String) extends Co
         case KeyEvent.VK_O => {
           val fileChooser = new JFileChooser()
           fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")))
-          val returnVal = fileChooser.showOpenDialog(frame)
+          val returnVal = fileChooser.showOpenDialog(null)
           if (returnVal == JFileChooser.APPROVE_OPTION) {
             val file = fileChooser.getSelectedFile
             emulator = loadProblem(file.getAbsolutePath)
@@ -52,7 +53,6 @@ class ManualController(frame: JFrame, board: Board, filePath: String) extends Co
         case _ => StepResult(false, false)
       }
       if (res.gameOver) {
-        board.setGameOver(true)
         println(Utils.encode(commands.toList))
       }
 

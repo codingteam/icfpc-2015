@@ -16,7 +16,7 @@ object VisualizatorApplication {
     val filePath = if (args.length == 1) args(0) else "problem_0.json"
     val board = new Board
     val frame = new JFrame
-    val controller = new ManualController(frame, board, filePath)
+    val controller = new ManualController(new Visualizator(board), filePath)
 
     frame.setContentPane(board)
     frame.setTitle(controller.title)

@@ -6,17 +6,17 @@ import ru.org.codingteam.icfpc.{CellState, Emulator}
 
 class Visualizator (board: Board) {
 
-  def visualizeState(emulator: Emulator): Visualizator = {
+  def visualizeState(emulator: Emulator): Unit = {
     board.putSize(emulator.field.height, emulator.field.width)
-    renderFilled(emulator)
+    board.setGameOver(emulator.gameOver)
+
+    renderFull(emulator)
     renderCurrentUnit(emulator)
     renderScore(emulator)
     board.repaint()
-
-    this
   }
 
-  private def renderFilled(emulator: Emulator): Unit = {
+  private def renderFull(emulator: Emulator): Unit = {
     for (row <- 0 until emulator.field.height) {
       for (col <- 0 until emulator.field.width) {
         val color = if (emulator.field(col, row) == CellState.Full) {

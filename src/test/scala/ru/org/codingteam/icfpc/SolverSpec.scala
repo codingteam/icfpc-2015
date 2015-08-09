@@ -88,4 +88,10 @@ class SolverSpec extends FlatSpec with Matchers {
     val state = SolverState(Field.from(almostFilledField), Vector(bigUnit))
     assert(Solver.goalAchieved(state))
   }
+
+  it should "count state as a finished if any row has been filled" in {
+    val filledField = emptyField.copy(filled = Vector(CellDef(0, 0), CellDef(1, 0), CellDef(2, 0)))
+    val state = SolverState(Field.from(filledField), Vector(unit))
+    assert(Solver.goalAchieved(state))
+  }
 }

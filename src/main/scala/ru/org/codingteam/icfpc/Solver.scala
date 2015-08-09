@@ -32,6 +32,10 @@ object Solver {
         return false
       }
     }
+
+    def anyRowFilled: Boolean = {
+      0.until(field.height).exists(field.isRowFilled)
+    }
   }
 
   def solution(start: SolverState): Seq[SolverState] = {
@@ -67,7 +71,7 @@ object Solver {
 
   def heuristic(state: SolverState): Int = state.field.minimalGape
 
-  def goalAchieved(state: SolverState): Boolean = !state.canPlaceUnit
+  def goalAchieved(state: SolverState): Boolean = state.anyRowFilled || !state.canPlaceUnit
 
   private def reconstructPath(cameFrom: Map[SolverState, SolverState], goal: SolverState): Seq[SolverState] = {
     var totalPath = Vector[SolverState]()

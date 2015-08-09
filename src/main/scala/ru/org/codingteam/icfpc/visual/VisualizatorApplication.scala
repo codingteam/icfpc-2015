@@ -3,15 +3,19 @@ package ru.org.codingteam.icfpc.visual
 import java.awt.Dimension
 import javax.swing.{JFrame, WindowConstants}
 
-import ru.org.codingteam.icfpc.visual.controller.ManualController
+import ru.org.codingteam.icfpc.visual.controller.{ReplayController, ManualController}
 
 object VisualizatorApplication {
   def main(args: Array[String]): Unit = {
     println(args.toList)
-    val filePath = if (args.length == 1) args(0) else "problem_0.json"
+
     val board = new Board
     val frame = new JFrame
-    val controller = new ManualController(new Visualizator(board), filePath)
+    val controller = args match {
+      case Array(filePath) => new ManualController(new Visualizator(board), filePath)
+      case Array(filePath, solution) => new ReplayController(new Visualizator(board), filePath, solution)
+      case _ => new ManualController(new Visualizator(board), "problem_0.json")
+    }
 
     frame.setContentPane(board)
     frame.setTitle(controller.title)

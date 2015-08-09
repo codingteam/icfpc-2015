@@ -127,6 +127,7 @@ class Emulator (val field : Field) {
   var fieldDef : FieldDef = _
 
   var score = 0
+  var units = 0
 
   // Indicates that the Emulator can be in an inconsistent state
   var gameOver = false
@@ -232,8 +233,11 @@ class Emulator (val field : Field) {
   def spawnUnit(unit : UnitDef) : Boolean = {
     val (cX, cY) = getSpawnPositionShifts(unit)
     val translated = translate(unit)(cX, cY)
+
     currentUnit = translated
-    return check(currentUnit)
+    units += 1
+
+    check(currentUnit)
   }
 
   // return true if it is possible to spawn next unit

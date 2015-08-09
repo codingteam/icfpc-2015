@@ -252,12 +252,14 @@ class Emulator (val field : Field) {
 
   }
 
-  def rotateCoord(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) = {
+  def rotateCoord(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) =
+    rotate(currentUnit.pivot)(clockwise)(cellX, cellY)
+
+  def rotate(pivot: CellDef)(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) = {
     case class R3Coord(x: Double, y: Double, z: Double)
 
-    val pivot = currentUnit.pivot
-    val pvtX = currentUnit.pivot.x
-    val pvtY = currentUnit.pivot.y
+    val pvtX = pivot.x
+    val pvtY = pivot.y
 
     val clockwiseCoeff = if (clockwise) -1 else 1
 

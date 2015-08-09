@@ -46,7 +46,21 @@ object LocalSolver {
         while (!openset.isEmpty && solution == null) {
             val current = openset.dequeue
             if(current.position == pos) {
-                solution = current
+                // great, we've found a solution! Now let's find one final
+                // command that will lock the unit in place
+                val translated = emul.translate(unit)(current.position._1,
+                                                      current.position._2)
+                val lockDir = List(Direction.E, Direction.W,
+                                   Direction.SE, Direction.SW)
+                    .map(dir => (dir, emul.willLock(translated, Move(dir))))
+                    .filter(x => x._2)
+                    .head
+                    ._1
+
+                solution = new Solution(current.pathCost,
+                                        current.estimatedCost,
+                                        current.position,
+                                        Move(lockDir) :: current.commands)
             } else {
                 if (closedset.add(current)) {
 

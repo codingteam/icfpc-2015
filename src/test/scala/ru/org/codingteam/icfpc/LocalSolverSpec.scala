@@ -11,6 +11,6 @@ class LocalSolverSpec extends FlatSpec with Matchers {
         val solution = LocalSolver.findPath(field, unit, pos)
         // there are a number of equivalent solutions, so I'll just test for
         // the cost
-        assert(solution.get.length === 9)
+        assert(solution.get.length === 10)
     }
 }

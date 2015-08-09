@@ -2,10 +2,7 @@
 
 module Core.GameModel where
 
-import Data.HashSet
-import Data.Aeson
 import GHC.Generics (Generic)
-import Data.Aeson.Types
 import Data.Vector
 
 data Cell = Cell {

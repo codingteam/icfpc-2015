@@ -17,11 +17,10 @@ runCommand = undefined
 initBoard :: GameInput -> Board
 initBoard g = let w  = 2 + gameiWidth g
                   h  = 2 + gameiHeight g
-                  v1 = V.fromList [0..h]
-                  vv = v1 // [ (i, vn)
-                             | i <- [0..h],
-                               vn <- V.fromList [ Field False (Cell x y) | x <- [-1..(w-1)], y <- (i - 1) ]
-                             ]
+                  vv = V.fromList [ vn
+                                  | hh <- [0..h],
+                                    vn <- [ V.fromList [ Field False (Cell x (hh - 1)) | x <- [-1..(w - 1)] ] ]
+                                  ]
               in
                Board vv w h
                

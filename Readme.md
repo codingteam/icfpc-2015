@@ -18,10 +18,11 @@ Usage
 -----
 
     # Run application for submission
-    sbt "run -f filename.json [-print true] [-p phrase1] [-p phrase2] ..." 
+    > sbt "run -f filename.json [-print true] [-p phrase1] [-p phrase2] ..." 
 
-    # Run The Visualizator
-    sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication [filename.json] [solution] [srcIndex]"
+    # Run The Visualizator:
+    # If solution is not provided The Visualizator starts in Manual Mode
+    > sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication [filename.json] [solution] [srcIndex]"
 
 Visualizer Shorcuts
 -------------------
@@ -35,6 +36,10 @@ Visualizer Shorcuts
 - `,` — Turn(clockwise = true)
 - `.` — Turn(clockwise = false)
 - `O` — Open another problem file
+
+## Replay Mode ##
+
+- `SPACE` — pause/resume replay
 
 Team
 ----

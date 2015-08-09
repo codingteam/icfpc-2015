@@ -18,7 +18,12 @@ class ReplayController(visualizator: Visualizator, filePath: String, solution: S
   override def keyListener: KeyListener = new KeyListener {
     override def keyTyped(keyEvent: KeyEvent): Unit = {}
 
-    override def keyPressed(keyEvent: KeyEvent): Unit = {}
+    override def keyPressed(keyEvent: KeyEvent): Unit = {
+      keyEvent.getKeyCode match {
+        case KeyEvent.VK_SPACE => if (timer.isRunning) timer.stop() else timer.start()
+        case _ =>
+      }
+    }
 
     override def keyReleased(keyEvent: KeyEvent): Unit = {}
   }

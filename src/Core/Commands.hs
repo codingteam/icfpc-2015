@@ -25,4 +25,4 @@ undict = Map.fromList $ concat $ map fn (Map.toList dict)
 decode :: String -> [Command]
 decode str = flip map str $ \c -> case Map.lookup c undict of
   Just com -> com
-  _        -> Incorrect
+  _        -> Invalid

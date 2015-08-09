@@ -69,30 +69,61 @@ turn (unit, state) d = (rotate d unit, state)
         frndr y | even y    = ceiling
                 | otherwise = floor
 
-hit :: Board -> (Unit, UnitStates) -> Bool
-hit board ustates = isJust $ hitmyself <$> hitwall (board, ustates)
+--
+-- 02:01:02< jjourdan> there are 3 kinds of errors :
+-- 02:01:17< jjourdan> 1- too long chain of commands
+-- 02:01:23< jjourdan> 2- invalid command
+-- 02:01:33< jjourdan> 3- repeating configuration
+--
+-- Notice!
+-- hitmyself will end the game if the result is True
+    
+hitConfigs :: (Unit, UnitStates) -> Bool
+hitConfigs (unit, [])   = False
+hitConfigs (unit, s:ss) | (pivot unit) == (pivot s) &&
+                          hitMembers (members unit) (members s) = True
+                        | otherwise = hitConfigs (unit, ss)
   where
-    hitmyself :: (Unit, UnitStates) -> Bool
-    hitmyself (unit, [])   = False
-    hitmyself (unit, s:ss) | (pivot unit) == (pivot s) &&
-                             hitMembers (members unit) (members s) = True
-                           | otherwise = hitmyself (unit, ss)
+    hitMembers pm sm = sort (V.toList pm) == sort (V.toList sm)
+    
+hitWall :: (Board, (Unit, UnitStates)) -> Bool
+hitWall (board, (unit, states)) = hit' (boardFields board) (members unit)
+  where
+    hit' :: Vector (Vector Field) -> Vector Cell -> Bool
+    hit' fields members = _hit fields members (V.length members)
       where
-        hitMembers pm sm = sort (V.toList pm) == sort (V.toList sm)
+        _hit fields members 0 = False
+        _hit fields members n =
+          let mcell = members V.! (n - 1)
+              field = fields V.! y mcell V.! x mcell
+          in
+           filled field
 
 
-    hitwall :: (Board, (Unit, UnitStates)) -> Maybe (Unit, UnitStates)
-    hitwall (board, (unit, states)) =
-      case hit' (boardFields board) (members unit) of
-        True  -> Just (unit, states)
-        _     -> Nothing
-      where
-        hit' :: Vector (Vector Field) -> Vector Cell -> Bool
-        hit' fields members = _hit fields members (V.length members)
-          where
-            _hit fields members 0 = False
-            _hit fields members n =
-              let mcell = members V.! (n - 1)
-                  field = fields V.! y mcell V.! x mcell
-              in
-               filled field
+-- hit :: Board -> (Unit, UnitStates) -> Bool
+-- hit board ustates = isJust $ hitmyself <$> hitwall (board, ustates)
+--   where
+--     hitmyself :: (Unit, UnitStates) -> Bool
+--     hitmyself (unit, [])   = False
+--     hitmyself (unit, s:ss) | (pivot unit) == (pivot s) &&
+--                              hitMembers (members unit) (members s) = True
+--                            | otherwise = hitmyself (unit, ss)
+--       where
+--         hitMembers pm sm = sort (V.toList pm) == sort (V.toList sm)
+
+
+--     hitwall :: (Board, (Unit, UnitStates)) -> Maybe (Unit, UnitStates)
+--     hitwall (board, (unit, states)) =
+--       case hit' (boardFields board) (members unit) of
+--         True  -> Just (unit, states)
+--         _     -> Nothing
+--       where
+--         hit' :: Vector (Vector Field) -> Vector Cell -> Bool
+--         hit' fields members = _hit fields members (V.length members)
+--           where
+--             _hit fields members 0 = False
+--             _hit fields members n =
+--               let mcell = members V.! (n - 1)
+--                   field = fields V.! y mcell V.! x mcell
+--               in
+--                filled field

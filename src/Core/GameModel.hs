@@ -36,7 +36,11 @@ data GameState = GameState {
 
 data MoveDirection = E | W | SE | SW deriving (Show, Eq, Ord)
 data TurnDirection = CW | CCW deriving (Show, Eq, Ord)
-data Command = Move MoveDirection | Turn TurnDirection deriving (Show, Eq, Ord)
+data Command = Move MoveDirection
+             | Turn TurnDirection
+             | Ignore
+             | Incorrect -- facing this command game ends and score becomes 0
+             deriving (Show, Eq, Ord)
 
 data GameInput = GameInput {
     gameiId           :: Int

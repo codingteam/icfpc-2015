@@ -13,7 +13,8 @@ dict = Map.fromList [(Move W,   "p'!.03"),
                      (Move SW,  "aghij4"),
                      (Move SE,  "lmno 5"),
                      (Turn CW,  "dqrvz1"),
-                     (Turn CCW, "kstuwx")]
+                     (Turn CCW, "kstuwx"),
+                     (Ignore,   "\t\n\r")]
 
 undict :: Map Char Command
 undict = Map.fromList $ concat $ map fn (Map.toList dict)
@@ -21,5 +22,7 @@ undict = Map.fromList $ concat $ map fn (Map.toList dict)
     fn :: (Command, String) -> [(Char, Command)]
     fn (com, letters) = map (\letter -> (letter, com)) letters
 
--- decode :: String -> [Command]
--- decode cmds 
+decode :: String -> [Command]
+decode str = flip map str $ \c -> case Map.lookup c undict of
+  Just com -> com
+  _        -> Incorrect

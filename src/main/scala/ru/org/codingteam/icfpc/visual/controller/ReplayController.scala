@@ -7,7 +7,7 @@ import javax.swing.Timer
 import ru.org.codingteam.icfpc.Utils
 import ru.org.codingteam.icfpc.visual.Visualizator
 
-class ReplayController(visualizator: Visualizator, filePath: String, solution: String) extends Controller with ActionListener {
+class ReplayController(visualizator: Visualizator, filePath: String, solution: String, srcIndex: Int = 0) extends Controller(srcIndex) with ActionListener {
   private val emulator = loadProblem(filePath)
   private val timer = new Timer(500, this)
   private var commands = Utils.decode(solution)

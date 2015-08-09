@@ -4,10 +4,10 @@ import java.awt.event.KeyListener
 
 import ru.org.codingteam.icfpc.Emulator
 
-abstract class Controller {
+abstract class Controller(srcIndex: Int = 0) {
   protected def loadProblem(fileName: String): Emulator = {
     val emulator = Emulator(fileName)
-    emulator.initSource(0)
+    emulator.initSource(srcIndex)
     emulator.spawnNextUnit()
     emulator
   }

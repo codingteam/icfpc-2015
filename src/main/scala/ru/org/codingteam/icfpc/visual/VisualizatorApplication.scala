@@ -14,6 +14,7 @@ object VisualizatorApplication {
     val controller = args match {
       case Array(filePath) => new ManualController(new Visualizator(board), filePath)
       case Array(filePath, solution) => new ReplayController(new Visualizator(board), filePath, solution)
+      case Array(filePath, solution, srcIndex) => new ReplayController(new Visualizator(board), filePath, solution, srcIndex.toInt)
       case _ => new ManualController(new Visualizator(board), "problem_0.json")
     }
 

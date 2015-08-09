@@ -21,7 +21,7 @@ Usage
     sbt "run -f filename.json [-print true] [-p phrase1] [-p phrase2] ..." 
 
     # Run The Visualizator
-    sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication [filename.json] [solution]"
+    sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication [filename.json] [solution] [srcIndex]"
 
 Visualizer Shorcuts
 -------------------

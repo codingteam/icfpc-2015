@@ -71,8 +71,9 @@ object BottomSolver {
       val bottomest = positions.sortWith(_._2 < _._2).headOption
       bottomest match {
         case Some(b) =>
-          state = state.moveCurrentUnit(b)
-          result :+= state
+          val newState = state.moveCurrentUnit(b)
+          result :+= newState.copy(field = state.field)
+          state = newState
         case None =>
           return Some(result)
       }

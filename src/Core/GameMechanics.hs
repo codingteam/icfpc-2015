@@ -4,8 +4,8 @@ module Core.GameMechanics where
 
 import Core.GameModel
 
-import Data.Vector as V
-import Data.List (sort)
+import qualified Data.Vector as V
+import Data.List (sort, nub)
 import Data.Maybe (isJust)
 import Control.Applicative ((<*>), (<$>), pure)
 
@@ -17,12 +17,26 @@ runCommand = undefined
 initBoard :: GameInput -> Board
 initBoard g = let w  = 2 + gameiWidth g
                   h  = 2 + gameiHeight g
+                  filled = gameiFilled g
                   vv = V.fromList [ vn
-                                  | hh <- [0..h],
-                                    vn <- [ V.fromList [ Field False (Cell x (hh - 1)) | x <- [-1..(w - 1)] ] ]
+                                  | y <- [-1..(h - 1)],
+                                    vn <- [ V.fromList [ Field (isFilled (w - 2, h - 2) (x, y)) (Cell x y) | x <- [-1..(w - 1)] ] ]
                                   ]
               in
-               Board vv w h
+               Board (applyFilled vv [ (yy, cells)
+                                     | yy <- nub (map (\cell -> y cell) filled),
+                                       cells <- [ filter (\(Cell _ y) -> y == yy) filled ] ]) w h
+  where
+    isFilled (w, h) (x, y) | x < 0 || y < 0 || x >= w || y >= h = True
+                           | otherwise                      = False
+                                                              
+    applyFilled :: V.Vector (V.Vector Field) -> [(Int, [Cell])] -> V.Vector (V.Vector Field)
+    applyFilled vec []   = vec
+    applyFilled vec cs =
+      let y     = fst (head cs)
+          cells = snd (head cs)
+      in
+       flip applyFilled cs $ vec V.// [(y, (vec V.! y V.// map (\(Cell x y) -> (x, Field True (Cell x y))) cells))]
                
 move :: (Unit, UnitStates) -> MoveDirection -> (Unit, UnitStates)
 move (unit, states) d =
@@ -99,7 +113,7 @@ hitConfigs (unit, s:ss) | (pivot unit) == (pivot s) &&
 hitWall :: (Board, (Unit, UnitStates)) -> Bool
 hitWall (board, (unit, states)) = hit' (boardFields board) (members unit)
   where
-    hit' :: Vector (Vector Field) -> Vector Cell -> Bool
+    hit' :: V.Vector (V.Vector Field) -> V.Vector Cell -> Bool
     hit' fields members = _hit fields members (V.length members)
       where
         _hit fields members 0 = False
@@ -128,7 +142,7 @@ hitWall (board, (unit, states)) = hit' (boardFields board) (members unit)
 --         True  -> Just (unit, states)
 --         _     -> Nothing
 --       where
---         hit' :: Vector (Vector Field) -> Vector Cell -> Bool
+--         hit' :: V.Vector (V.Vector Field) -> V.Vector Cell -> Bool
 --         hit' fields members = _hit fields members (V.length members)
 --           where
 --             _hit fields members 0 = False

@@ -1,16 +1,21 @@
 package ru.org.codingteam.icfpc
 
-import ru.org.codingteam.icfpc.definitions.{UnitDef,CellDef}
 import ru.org.codingteam.icfpc.Solver.Position
-import ru.org.codingteam.icfpc.Utils._
-import scala.math.{floor,ceil,signum,max,abs}
-import scala.collection.mutable.{PriorityQueue,HashSet}
+import ru.org.codingteam.icfpc.definitions.UnitDef
+
+import scala.collection.mutable.{HashSet, PriorityQueue}
+import scala.math.{abs, max, signum}
 
 case class Solution(pathCost: Long, estimatedCost: Long, position: Position,
     commands: List[Command]) {
 
     // that's how I want it to be for HashSet to work
     override def hashCode = position.hashCode
+
+    override def equals(obj: scala.Any): Boolean = obj match {
+        case Solution(_, _, pos, _) => pos == position
+        case _ => false
+    }
 }
 
 object LocalSolver {
@@ -44,32 +49,33 @@ object LocalSolver {
             if(current.position == pos) {
                 solution = current
             } else {
-                closedset.add(current)
+                if (closedset.add(current)) {
 
-                // extend current solution with each possible command and add
-                // the result to openset
+                    // extend current solution with each possible command and add
+                    // the result to openset
 
-                def go(dir: Direction.Direction): Solution = {
+                    def go(dir: Direction.Direction): Solution = {
                     val new_pos =
                         Emulator.translateCoord(dir)(current.position._1,
                                                      current.position._2)
-                    new Solution(current.pathCost + 1,
-                                 distance(new_pos, pos),
-                                 new_pos,
-                                 Move(dir) :: current.commands)
+                        new Solution(current.pathCost + 1,
+                            distance(new_pos, pos),
+                            new_pos,
+                            Move(dir) :: current.commands)
+                    }
+
+                    val translated = emul.translate(unit)(current.position._1,
+                        current.position._2)
+
+                    if (!emul.willLock(translated, Move(Direction.E)))
+                        openset.enqueue(go(Direction.E))
+                    if (!emul.willLock(translated, Move(Direction.W)))
+                        openset.enqueue(go(Direction.W))
+                    if (!emul.willLock(translated, Move(Direction.SE)))
+                        openset.enqueue(go(Direction.SE))
+                    if (!emul.willLock(translated, Move(Direction.SW)))
+                        openset.enqueue(go(Direction.SW))
                 }
-
-                val translated = emul.translate(unit)(current.position._1,
-                                                      current.position._2)
-
-                if(!emul.willLock(translated, Move(Direction.E)))
-                    openset.enqueue(go(Direction.E))
-                if(!emul.willLock(translated, Move(Direction.W)))
-                    openset.enqueue(go(Direction.W))
-                if(!emul.willLock(translated, Move(Direction.SE)))
-                    openset.enqueue(go(Direction.SE))
-                if(!emul.willLock(translated, Move(Direction.SW)))
-                    openset.enqueue(go(Direction.SW))
             }
         }
 

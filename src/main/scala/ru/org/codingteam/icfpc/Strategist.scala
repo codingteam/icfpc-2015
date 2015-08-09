@@ -17,6 +17,7 @@ object Strategist {
 
   private def solve(emulator: Emulator, state: SolverState, commands: Seq[Command] = List()): Seq[Command] = {
     def reduce(steps: Seq[SolverState]): Seq[Command] = {
+      println(s"Partial solution: $steps")
       val cmds = steps.filter(_.lastMovedUnit.isDefined).toStream.map(
         step => LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get)
       )

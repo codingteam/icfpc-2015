@@ -15,8 +15,6 @@ object BottomSolver {
 
     def moveCurrentUnit(position: Position): SolverState = {
       val emulator = new Emulator(Field.from(field))
-      emulator.spawnUnit(currentUnit.get)
-      val spawned = emulator.currentUnit
 
       val unit = emulator.translate(currentUnit.get)(position._1, position._2)
       emulator.lock(unit)
@@ -24,7 +22,7 @@ object BottomSolver {
       SolverState(
         field = Field.from(emulator),
         units = units.tail,
-        Some(spawned),
+        currentUnit,
         Some(position))
     }
 
@@ -53,7 +51,7 @@ object BottomSolver {
 
     def bottomNotEmpty(coord: Position): Boolean = {
       val coords = List(Direction.SE, Direction.SW) map(Emulator.translateCoord(_)(coord._1, coord._2))
-      coords.exists(c => !field.isValidCell(c._1, c._2) || field(c._1, c._2) == CellState.Full)
+      coords.exists(c => c._2 >= field.height || (field.isValidCell(c._1, c._2) && field(c._1, c._2) == CellState.Full))
     }
   }
 

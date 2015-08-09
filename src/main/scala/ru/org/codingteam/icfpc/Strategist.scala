@@ -24,7 +24,7 @@ object Strategist {
       val commands_ = cmds.takeWhile(c => c.isDefined).flatMap(c => c.get).toVector
       val commandCount = emulator.emulate(commands_)
       commandCount match {
-        case 0 => Seq()
+        case 0 => commands
         case n if n == commands_.size =>
           val state_ = SolverState(
             Field.from(emulator),

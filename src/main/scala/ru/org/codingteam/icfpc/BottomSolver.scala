@@ -70,7 +70,7 @@ object BottomSolver {
         emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y)) &&
           emulator.anyNeighborNotEmpty(unit, x, y)
       })
-      val bottomest = positions.sortWith(_._2 < _._2).headOption
+      val bottomest = positions.sortWith(_._2 > _._2).headOption
       bottomest match {
         case Some(b) =>
           val newState = state.moveCurrentUnit(b)

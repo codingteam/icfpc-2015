@@ -28,13 +28,13 @@ Visualizer Shorcuts
 
 ## Manual Mode ##
 
-- W — Move(W)
-- E — Move(E)
-- S — Move(SW)
-- D — Move(SE)
-- , — Turn(clockwise = true)
-- . — Turn(clockwise = false)
-- O — Open another problem file
+- `W` — Move(W)
+- `E` — Move(E)
+- `S` — Move(SW)
+- `D` — Move(SE)
+- `,` — Turn(clockwise = true)
+- `.` — Turn(clockwise = false)
+- `O` — Open another problem file
 
 Team
 ----

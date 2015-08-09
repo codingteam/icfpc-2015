@@ -277,19 +277,22 @@ class Emulator (val field : Field) {
       (pvtY + clockwiseCoeff * rotated.y).toInt)
   }
 
+  def tryCommand(unit: UnitDef, cmd: Command): UnitDef = cmd match {
+    case Move(direction) =>
+      mapUnit(unit)(Emulator.translateCoord(direction))
+    case Turn(clockwise) =>
+      mapUnit(unit)(rotateCoord(clockwise))
+    }
+
   // Return true if the unit will be locked as a result of command execution
-  def willLock(unit: UnitDef, cmd : Command) : Boolean = {
-    val result = cmd match {
-                    case Move(direction) =>
-                      mapUnit(unit)(Emulator.translateCoord(direction))
-                    case Turn(clockwise) =>
-                      mapUnit(unit)(rotateCoord(clockwise))
-                  }
-    return ! check(result)
-  }
+  def willLock(unit: UnitDef, cmd : Command) : Boolean =
+      ! check(tryCommand(unit, cmd))
 
   // Return true if the unit is locked as a result of command execution
-  def executeCommand(cmd : Command) : Boolean = willLock(currentUnit, cmd)
+  def executeCommand(cmd : Command) : Boolean = {
+      currentUnit = tryCommand(currentUnit, cmd)
+      return ! check(currentUnit)
+  }
 
   // Lock current unit: mark all corresponding cells as Full
   def lock(unit : UnitDef) : Unit = {

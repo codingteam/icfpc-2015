@@ -21,11 +21,10 @@ case class Solution(pathCost: Long, estimatedCost: Long, position: Position,
 object LocalSolver {
     def findPath(field: Field, unit: UnitDef, pos: Position):
     Option[List[Command]] = {
-        // FIXME: find out how to do that properly, i.e. with a singleton
-        // object or something
+        // the lower the cost the better
         implicit val SolutionOrderer = new Ordering[Solution] {
             def compare(x: Solution, y: Solution): Int =
-                        (x.pathCost + x.estimatedCost)
+                -(x.pathCost + x.estimatedCost)
                 .compare(y.pathCost + y.estimatedCost)
         }
 
@@ -67,14 +66,18 @@ object LocalSolver {
                     val translated = emul.translate(unit)(current.position._1,
                         current.position._2)
 
-                    if (!emul.willLock(translated, Move(Direction.E)))
+                    if (!emul.willLock(translated, Move(Direction.E))) {
                         openset.enqueue(go(Direction.E))
-                    if (!emul.willLock(translated, Move(Direction.W)))
+                    }
+                    if (!emul.willLock(translated, Move(Direction.W))) {
                         openset.enqueue(go(Direction.W))
-                    if (!emul.willLock(translated, Move(Direction.SE)))
+                    }
+                    if (!emul.willLock(translated, Move(Direction.SE))) {
                         openset.enqueue(go(Direction.SE))
-                    if (!emul.willLock(translated, Move(Direction.SW)))
+                    }
+                    if (!emul.willLock(translated, Move(Direction.SW))) {
                         openset.enqueue(go(Direction.SW))
+                    }
                 }
             }
         }

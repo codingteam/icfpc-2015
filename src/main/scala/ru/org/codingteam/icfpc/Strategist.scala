@@ -10,6 +10,7 @@ object Strategist {
     val units = problem.getUnits(seed).toList
     val emulator = new Emulator(field)
     emulator.load(problem)
+    emulator.initSource(seed)
 
     solve(emulator, units)
   }

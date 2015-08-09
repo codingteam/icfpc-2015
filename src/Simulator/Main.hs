@@ -12,7 +12,7 @@ import Options.Applicative
 
 simulate :: [Char] -> Maybe Int -> GameInput -> [GameState]
 simulate commands index ginput = [GameState {}]
-  
+                                 
 loadProblem :: String -> IO (Maybe GameInput)
 loadProblem file = do
   json <- readFile file

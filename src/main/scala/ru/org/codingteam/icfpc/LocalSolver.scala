@@ -48,8 +48,8 @@ object LocalSolver {
             if(current.position == pos) {
                 // great, we've found a solution! Now let's find one final
                 // command that will lock the unit in place
-                val translated = emul.translate(unit)(current.position._1,
-                                                      current.position._2)
+                val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
+                                                      current.position._2 - unit.pivot.y)
                 val lockDir = List(Direction.E, Direction.W,
                                    Direction.SE, Direction.SW)
                     .map(dir => (dir, emul.willLock(translated, Move(dir))))
@@ -77,8 +77,8 @@ object LocalSolver {
                             Move(dir) :: current.commands)
                     }
 
-                    val translated = emul.translate(unit)(current.position._1,
-                        current.position._2)
+                    val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
+                        current.position._2 - unit.pivot.y)
 
                     if (!emul.willLock(translated, Move(Direction.E))) {
                         openset.enqueue(go(Direction.E))

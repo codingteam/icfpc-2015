@@ -3,6 +3,8 @@ package ru.org.codingteam.icfpc
 import org.scalatest.{FlatSpec, Matchers}
 import ru.org.codingteam.icfpc.definitions.{CellDef, FieldDef, UnitDef}
 
+import scala.io.Source
+
 class StrategistSpec extends FlatSpec with Matchers {
 
   "The Strategist" should "solve" in {
@@ -16,6 +18,13 @@ class StrategistSpec extends FlatSpec with Matchers {
       sourceLength = 1,
       sourceSeeds = Vector(0))
     val solution = Strategist.solution(field, 0)
+    assert(solution.nonEmpty)
+  }
+
+  it should "solve problem_8.json" in {
+    val string = Source.fromFile("problem_8.json").getLines().mkString("\n")
+    val problem = Serializer.deserialize(string)
+    val solution = Strategist.solution(problem, 28581)
     assert(solution.nonEmpty)
   }
 }

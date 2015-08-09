@@ -29,6 +29,15 @@ object Field {
 class Field(val width : Int, val height : Int) {
   var field = Array.fill[CellState.CellState](width, height){CellState.Empty}
 
+  def filledString: String = {
+    (for { x <- 0.until(width)
+          y <- 0.until(height)
+          if this(x, y) == CellState.Full }
+      yield s"($x, $y)").mkString("; ")
+  }
+
+  override def toString: String = s"Field($width, $height) { $filledString }"
+
   def refill() : Unit = {
     field = Array.fill[CellState.CellState](width, height){CellState.Empty}
   }
@@ -132,10 +141,14 @@ class Emulator (val field : Field) {
     load(fieldDef)
   }
 
-  def initSource(srcIdx : Int) : Unit = {
-    val seed = fieldDef.sourceSeeds(srcIdx)
+  def initSourceWithSeed(seed: Int): Unit = {
     val prng = new PRNG(seed)
     source = prng.map((i) => fieldDef.units(i % fieldDef.units.size)).take(fieldDef.sourceLength)
+  }
+
+  def initSource(srcIdx : Int) : Unit = {
+    val seed = fieldDef.sourceSeeds(srcIdx)
+    initSourceWithSeed(seed)
   }
 
   private var source : Iterator[UnitDef] = _
@@ -173,11 +186,11 @@ class Emulator (val field : Field) {
       cell match {
         case CellDef(x,y) =>
           if (! field.isValidCell(x,y)) {
-            println(s"($x,$y) is not valid cell.")
+            //println(s"($x,$y) is not valid cell.")
             return false
           }
           if (field(x,y) != CellState.Empty) {
-            println(s"($x,$y) is not empty.")
+            //println(s"($x,$y) is not empty.")
             return false
           }
       }
@@ -185,11 +198,19 @@ class Emulator (val field : Field) {
     return true
   }
 
+  /**
+   * Translates unit pivot to coordinates and checks every its piece.
+   */
+  def anyNeighborNotEmpty(unit: UnitDef, x: Int, y: Int): Boolean = {
+    val placedUnit = translate(unit)(x, y)
+    placedUnit.members.forall(c => anyNeighborNotEmpty(c.x, c.y))
+  }
+
   def anyNeighborNotEmpty(x: Int, y: Int): Boolean = {
     val directions = Direction.values
-    val cells = directions.map(translateCoord(_)(x, y))
+    val cells = directions.map(Emulator.translateCoord(_)(x, y))
     val result = cells.exists(c => !field.isValidCell(c._1, c._2) || field(c._1, c._2) == CellState.Full)
-    println(s"$x, $y have not empty neighbours: $result")
+    //println(s"$x, $y have not empty neighbours: $result")
     result
   }
 
@@ -215,23 +236,6 @@ class Emulator (val field : Field) {
       return false
   }
 
-  }
-
-  def translateCoord(direction: Direction)(x: Int, y: Int) = {
-    def swDeltaX(curY : Int) : Int = {
-      if (curY % 2 == 1) {
-        0
-      } else {
-        -1
-      }
-    }
-
-    direction match {
-      case Direction.E => (x + 1, y)
-      case Direction.W => (x - 1, y)
-      case Direction.SE => (x + swDeltaX(y) + 1, y + 1)
-      case Direction.SW => (x + swDeltaX(y), y + 1)
-    }
   }
 
   def rotateCoord(clockwise: Boolean)(cellX: Int, cellY: Int): (Int, Int) = {
@@ -271,7 +275,7 @@ class Emulator (val field : Field) {
   def executeCommand(cmd : Command) : Boolean = {
     currentUnit = cmd match {
                     case Move(direction) =>
-                      mapUnit(currentUnit)(translateCoord(direction))
+                      mapUnit(currentUnit)(Emulator.translateCoord(direction))
                     case Turn(clockwise) =>
                       mapUnit(currentUnit)(rotateCoord(clockwise))
                   }
@@ -356,11 +360,29 @@ class Emulator (val field : Field) {
 }
 
 object Emulator {
+
   def apply(path : String) : Emulator = {
     val fd = Serializer.fromFile(path)
     val field = new Field(fd.width, fd.height)
     val em = new Emulator(field)
     em.load(fd)
     return em
+  }
+
+  def translateCoord(direction: Direction)(x: Int, y: Int) = {
+    def swDeltaX(curY : Int) : Int = {
+      if (curY % 2 == 1) {
+        0
+      } else {
+        -1
+      }
+    }
+
+    direction match {
+      case Direction.E => (x + 1, y)
+      case Direction.W => (x - 1, y)
+      case Direction.SE => (x + swDeltaX(y) + 1, y + 1)
+      case Direction.SW => (x + swDeltaX(y), y + 1)
+    }
   }
 }

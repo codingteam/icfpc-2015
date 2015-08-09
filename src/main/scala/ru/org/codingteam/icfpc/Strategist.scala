@@ -1,6 +1,6 @@
 package ru.org.codingteam.icfpc
 
-import ru.org.codingteam.icfpc.Solver.SolverState
+import ru.org.codingteam.icfpc.BottomSolver.SolverState
 import ru.org.codingteam.icfpc.definitions.FieldDef
 
 object Strategist {
@@ -10,7 +10,7 @@ object Strategist {
     val units = problem.getUnits(seed).toList
     val emulator = new Emulator(field)
     emulator.load(problem)
-    emulator.initSource(seed)
+    emulator.initSourceWithSeed(seed)
 
     solve(emulator, SolverState(Field.from(emulator), units))
   }
@@ -40,7 +40,7 @@ object Strategist {
       }
     }
 
-    val solution = Solver.solution(state)
+    val solution = BottomSolver.solution(state)
     solution match {
       case Some(steps) => reduce(steps)
       case None => commands

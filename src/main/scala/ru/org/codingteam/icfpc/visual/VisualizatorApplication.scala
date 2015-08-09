@@ -1,14 +1,9 @@
 package ru.org.codingteam.icfpc.visual
 
 import java.awt.Dimension
-import java.awt.event.{KeyEvent, KeyListener}
-import java.io.File
-import javax.swing.{JFileChooser, JFrame, WindowConstants}
+import javax.swing.{JFrame, WindowConstants}
 
-import ru.org.codingteam.icfpc._
 import ru.org.codingteam.icfpc.visual.controller.ManualController
-
-import scala.collection.mutable.ListBuffer
 
 object VisualizatorApplication {
   def main(args: Array[String]): Unit = {

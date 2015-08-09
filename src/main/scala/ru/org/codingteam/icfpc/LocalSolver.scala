@@ -71,10 +71,17 @@ object LocalSolver {
                     val new_pos =
                         Emulator.translateCoord(dir)(current.position._1,
                                                      current.position._2)
-                        new Solution(current.pathCost + 1,
+                        new Solution(current.pathCost + 3,
                             distance(new_pos, pos),
                             new_pos,
                             Move(dir) :: current.commands)
+                    }
+
+                    def turn(clockwise: Boolean): Solution = {
+                        new Solution(current.pathCost + 2,
+                                     current.estimatedCost,
+                                     current.position,
+                                     Turn(clockwise) :: current.commands)
                     }
 
                     val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
@@ -91,6 +98,12 @@ object LocalSolver {
                     }
                     if (!emul.willLock(translated, Move(Direction.SW))) {
                         openset.enqueue(go(Direction.SW))
+                    }
+                    if (!emul.willLock(translated, Turn(false))) {
+                        openset.enqueue(turn(false))
+                    }
+                    if (!emul.willLock(translated, Turn(true))) {
+                        openset.enqueue(turn(true))
                     }
                 }
             }

@@ -122,7 +122,7 @@ class Emulator (val field : Field) {
   // Indicates that the Emulator can be in an inconsistent state
   var gameOver = false
 
-  private def load(fd : FieldDef) : Unit = {
+  def load(fd : FieldDef) : Unit = {
     field.load(fd)
     fieldDef = fd
   }

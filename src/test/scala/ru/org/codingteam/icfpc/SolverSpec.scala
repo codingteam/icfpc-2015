@@ -42,7 +42,7 @@ class SolverSpec extends FlatSpec with Matchers {
     val initialState = SolverState(field, units.toVector)
     val solution = Solver.solution(initialState)
 
-    assert(solution !== null)
+    assert(solution.isDefined)
   }
 
   it should "find valid unit positions only on impacts" in {

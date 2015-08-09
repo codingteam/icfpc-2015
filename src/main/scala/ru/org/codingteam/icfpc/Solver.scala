@@ -7,16 +7,25 @@ object Solver {
   type Position = (Int, Int)
 
   case class SolverState(field: Field,
-                         units: Vector[UnitDef]) {
+                         units: Seq[UnitDef],
+                         lastMovedUnit: Option[UnitDef] = None,
+                         targetPosition: Option[Position] = None) {
 
     def currentUnit = units.headOption
 
     def moveCurrentUnit(position: Position): SolverState = {
       val emulator = new Emulator(Field.from(field))
+      emulator.spawnUnit(currentUnit.get)
+      val spawned = emulator.currentUnit
+
       val unit = emulator.translate(currentUnit.get)(position._1, position._2)
       emulator.lock(unit)
 
-      this.copy(field = Field.from(emulator), units = units.tail)
+      SolverState(
+        field = Field.from(emulator),
+        units = units.tail,
+        Some(spawned),
+        Some(position))
     }
 
     def canPlaceUnit: Boolean = {
@@ -38,7 +47,7 @@ object Solver {
     }
   }
 
-  def solution(start: SolverState): Seq[SolverState] = {
+  def solution(start: SolverState): Option[Seq[SolverState]] = {
     var closedSet = Set[SolverState]()
     var openSet = Set(start)
     var cameFrom = Map[SolverState, SolverState]()
@@ -49,7 +58,7 @@ object Solver {
     while (openSet.nonEmpty) {
       val current = openSet.toList.sortWith(fScore(_) < fScore(_)).head
       if (goalAchieved(current)) {
-        return reconstructPath(cameFrom, current)
+        return Some(reconstructPath(cameFrom, current))
       }
 
       openSet -= current
@@ -66,7 +75,7 @@ object Solver {
       }
     }
 
-    sys.error("Cannot find a way")
+    None
   }
 
   def heuristic(state: SolverState): Int = state.field.minimalGape

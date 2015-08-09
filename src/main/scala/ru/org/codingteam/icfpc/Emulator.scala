@@ -337,9 +337,12 @@ class Emulator (val field : Field) {
   // return number of actually executed commands
   def emulate(cmds : Seq[Command]) : Int = {
     var count = 0
-    spawnNextUnit()
-    println("First unit:")
-    MapPrinter.printUnit(currentUnit)
+    if (currentUnit == null) {
+      spawnNextUnit()
+      println("First unit:")
+      MapPrinter.printUnit(currentUnit)
+    }
+
     for (cmd <- cmds) {
       val res = emulatorStep(cmd)
       count += 1

@@ -6,19 +6,22 @@ import Data.HashSet
 import Data.Aeson
 import GHC.Generics (Generic)
 import Data.Aeson.Types
+import Data.Vector
 
 data Cell = Cell {
     x :: Int
   , y :: Int
-  } deriving (Show, Eq, Generic)
+  } deriving (Show, Eq, Generic, Ord)
 
 data Unit = Unit {
-    members :: [Cell]
+    members :: Vector Cell
   , pivot :: Cell
   } deriving (Show, Eq, Generic)
 
+data Field = Field { filled :: Bool, cell :: Cell } deriving (Show, Eq)
+
 data Board = Board {
-    boardFilled :: [Cell]
+    boardFields :: Vector (Vector Field)
   , boardWidth  :: Int
   , boardHeight :: Int
   } deriving (Show, Eq)
@@ -28,8 +31,12 @@ data GameState = GameState {
   , cunit  :: Unit -- current unit
   , runits :: [Unit] -- rest units
   , score  :: Int
+  , ended  :: Bool
   } deriving (Show, Eq)
 
+data MoveDirection = E | W | SE | SW deriving (Show, Eq)
+data TurnDirection = Clockwise | CounterClockwise deriving (Show, Eq)
+  
 data GameInput = GameInput {
     gameiId           :: Int
   , gameiUnits        :: [Unit]
@@ -46,4 +53,5 @@ data GameOutput = GameOutput {
   , gameoTag       :: String
   , gameoCommands  :: [Char]
   } deriving (Show, Generic)
+
              

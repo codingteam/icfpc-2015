@@ -10,11 +10,6 @@ import Data.Aeson.Types
 import Data.Char
 import Data.List.Split
 
--- _toJSONLabelModifier :: String -> (String -> String)
--- _toJSONLabelModifier prefix = modify
---   where modify s = let wop = splitOn prefix s !! 1 in
---           toLower (head wop) : tail
-
 jsonModifier :: String -> (String -> String)
 jsonModifier prefix = modify
   where modify s = let wop = splitOn prefix s !! 1 in
@@ -32,7 +27,6 @@ instance FromJSON Unit where
 
 instance FromJSON GameInput where
   parseJSON = genericParseJSON defaultOptions {
-    -- fieldLabelModifier = _fromJSONLabelModifier "gamei"
     fieldLabelModifier = jsonModifier "gamei"
     }
 

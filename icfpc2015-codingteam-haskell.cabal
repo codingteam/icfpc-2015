@@ -61,7 +61,8 @@ executable simulator
                        aeson >= 0.9,
                        unordered-containers,
                        bytestring,
-                       split
+                       split,
+                       vector
   
   -- Directories containing source files.
   hs-source-dirs:      src

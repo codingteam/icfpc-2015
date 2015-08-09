@@ -55,9 +55,15 @@ object Solver {
     var gScore = Map(start -> 0).withDefaultValue(Int.MaxValue)
     var fScore = Map(start -> heuristic(start)).withDefaultValue(Int.MaxValue)
 
+    var count = 0
+
     while (openSet.nonEmpty) {
+      count += 1
+      val open = openSet.size
+      println(s"Count: $count, open: $open")
+
       val current = openSet.toList.sortWith(fScore(_) < fScore(_)).head
-      if (goalAchieved(current)) {
+      if (goalAchieved(current) || count >= 100) {
         return Some(reconstructPath(cameFrom, current))
       }
 

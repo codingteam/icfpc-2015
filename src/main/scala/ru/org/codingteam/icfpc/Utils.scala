@@ -3,6 +3,8 @@ package ru.org.codingteam.icfpc
 import ru.org.codingteam.icfpc.definitions.UnitDef
 
 import scala.collection.mutable.ListBuffer
+import scala.io.Source
+import upickle.default._
 
 object CellState extends Enumeration {
   type CellState = Value
@@ -23,6 +25,17 @@ case class Turn(clockwise : Boolean) extends Command
  * Created by portnov on 07.08.15.
  */
 
+case class Score(
+                powerScore : Int,
+                seed : Int,
+                tag : String,
+                createdAt : String,
+                score : Int,
+                authorId : Int,
+                teamId : Int,
+                problemId : Int,
+                solution : String
+                  )
 
 object Utils {
 
@@ -100,6 +113,16 @@ object Utils {
     print("\n")
     em.printField()
     println(s"\nScore: ${em.score}")
+  }
+
+  def readScores(filePath : String) : List[Score] = {
+    val content = Source.fromFile(filePath).mkString
+    read[List[Score]](content)
+  }
+
+  def getScore(filePath : String, problemId : Int) : List[Int] = {
+    val scores = readScores(filePath)
+    (for (score <- scores if score.problemId == problemId) yield score.score)
   }
 
   // Size of only unit itself, without empty margins

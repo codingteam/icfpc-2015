@@ -83,11 +83,11 @@ object Solver {
   def goalAchieved(state: SolverState): Boolean = state.anyRowFilled || !state.canPlaceUnit
 
   private def reconstructPath(cameFrom: Map[SolverState, SolverState], goal: SolverState): Seq[SolverState] = {
-    var totalPath = Vector[SolverState]()
+    var totalPath = List(goal)
     var current = goal
     while (cameFrom.contains(current)) {
       current = cameFrom(current)
-      totalPath :+= current
+      totalPath +:= current
     }
 
     totalPath

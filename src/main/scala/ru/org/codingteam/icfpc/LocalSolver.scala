@@ -50,8 +50,9 @@ object LocalSolver {
                 // the result to openset
 
                 def go(dir: Direction.Direction): Solution = {
-                    val new_pos = emul.translateCoord(dir)(current.position._1,
-                                                           current.position._2)
+                    val new_pos =
+                        Emulator.translateCoord(dir)(current.position._1,
+                                                     current.position._2)
                     new Solution(current.pathCost + 1,
                                  distance(new_pos, pos),
                                  new_pos,

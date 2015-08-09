@@ -83,6 +83,7 @@ executable webserver
                       unordered-containers,
                       aeson,
 
+                      network >= 2.6,
                       httpd-shed,
                       optparse-applicative,
 

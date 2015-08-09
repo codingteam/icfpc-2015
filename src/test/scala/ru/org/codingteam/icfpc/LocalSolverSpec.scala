@@ -27,6 +27,6 @@ class LocalSolverSpec extends FlatSpec with Matchers {
         emulator.emulate(commands.init)
         val result = emulator.emulatorStep(commands.last)
 
-        assert(result.toLock === true)
+        assert(result.toLock) // last move should lock the piece
     }
 }

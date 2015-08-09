@@ -119,6 +119,9 @@ class Emulator (val field : Field) {
 
   var score = 0
 
+  // Indicates that the Emulator can be in an inconsistent state
+  var gameOver = false
+
   private def load(fd : FieldDef) : Unit = {
     field.load(fd)
     fieldDef = fd
@@ -307,6 +310,11 @@ class Emulator (val field : Field) {
         gameOver = true
       }
     }
+
+    if (gameOver) {
+      this.gameOver = gameOver
+    }
+
     return StepResult(gameOver, toLock)
   }
 

@@ -6,12 +6,14 @@ import ru.org.codingteam.icfpc.{CellState, Emulator}
 
 class Visualizator (board: Board) {
 
-  def visualizeState(emulator: Emulator): Unit = {
+  def visualizeState(emulator: Emulator): Visualizator = {
     board.putSize(emulator.field.height, emulator.field.width)
     renderFilled(emulator)
     renderCurrentUnit(emulator)
     renderScore(emulator)
     board.repaint()
+
+    this
   }
 
   private def renderFilled(emulator: Emulator): Unit = {

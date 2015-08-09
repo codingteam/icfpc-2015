@@ -50,12 +50,13 @@ object LocalSolver {
                 // command that will lock the unit in place
                 val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
                                                       current.position._2 - unit.pivot.y)
-                val lockDir = List(Direction.E, Direction.W,
-                                   Direction.SE, Direction.SW)
-                    .map(dir => (dir, emul.willLock(translated, Move(dir))))
-                    .filter(x => x._2)
-                    .head
-                    ._1
+                val dirs = for (dir <- Direction.values if emul.willLock(translated, Move(dir)))
+                                yield dir
+                if (dirs.isEmpty) {
+                    println(s"No filled neighbours for ${current.position}")
+                    return None
+                }
+                val lockDir = dirs.head
 
                 solution = new Solution(current.pathCost,
                                         current.estimatedCost,

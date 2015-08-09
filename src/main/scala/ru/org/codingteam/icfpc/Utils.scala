@@ -62,7 +62,7 @@ object Utils {
   }
 
   val knownSpells : Spells =
-    List("ei!", "io! io!", "yuggoth", "r'lyeh") map toSpell
+    List("ei!", "io! io!", "yuggoth", "r'lyeh", "necronomicon", "a! ia!") map toSpell
 
   def decode(str : String) : List[Command] = {
     str.toList.map((c) => unt9.get(c).get)

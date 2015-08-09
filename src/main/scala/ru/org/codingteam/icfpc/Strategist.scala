@@ -18,13 +18,19 @@ object Strategist {
   private def solve(emulator: Emulator, state: SolverState, commands: Seq[Command] = List()): Seq[Command] = {
     def reduce(steps: Seq[SolverState]): Seq[Command] = {
       val cmds = steps.filter(_.lastMovedUnit.isDefined).toStream.map(
-        step => LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get)
+        step => {
+          println(s"Local solver target: ${step.targetPosition.get}")
+          LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get)
+        }
       )
 
       val commands_ = cmds.takeWhile(c => c.isDefined).flatMap(c => c.get).toVector
       val commandCount = emulator.emulate(commands_)
       commandCount match {
-        case 0 => commands
+        case 0 => {
+          println(s"Stop. Local solver result: $cmds")
+          commands
+        }
         case n if n == commands_.size =>
           val state_ = SolverState(
             Field.from(emulator),

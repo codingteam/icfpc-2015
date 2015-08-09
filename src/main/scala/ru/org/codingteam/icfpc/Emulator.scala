@@ -207,8 +207,9 @@ class Emulator (val field : Field) {
    * Translates unit pivot to coordinates and checks every its piece.
    */
   def anyNeighborNotEmpty(unit: UnitDef, x: Int, y: Int): Boolean = {
+    val directions = Direction.values
     val placedUnit = translate(unit)(x - unit.pivot.x, y - unit.pivot.y)
-    placedUnit.members.forall(c => anyNeighborNotEmpty(c.x, c.y))
+    directions.exists(d => willLock(placedUnit, Move(d)))
   }
 
   def anyNeighborNotEmpty(x: Int, y: Int): Boolean = {
@@ -244,9 +245,10 @@ class Emulator (val field : Field) {
   // otherwise the game ends
   def spawnNextUnit(): Boolean = {
     if (source.hasNext) {
-    val unit = source.next()
-    spawnUnit(unit)
+      val unit = source.next()
+      spawnUnit(unit)
     } else {
+      println("No more units to spawn")
       return false
   }
 
@@ -312,7 +314,7 @@ class Emulator (val field : Field) {
   }
 
   def emulatorStep(cmd : Command) : StepResult = {
-    println(s"Execute: $cmd")
+    //println(s"Execute: $cmd")
     val oldUnit = currentUnit
     val toLock = executeCommand(cmd)
     var gameOver = false

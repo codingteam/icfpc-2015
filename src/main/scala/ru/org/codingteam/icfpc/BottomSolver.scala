@@ -60,6 +60,7 @@ object BottomSolver {
 
   def solution(start: SolverState): Option[Seq[SolverState]] = {
     if (goalAchieved(start)) {
+      println("Goal achieved. Stop.")
       return None
     }
 
@@ -67,9 +68,10 @@ object BottomSolver {
     var state = start
     while (!goalAchieved(state)) {
       val unit = state.currentUnit.get
-      val emulator = new Emulator(state.field)
       val positions = getBottomUnitPositions(state, unit)
+      //println(s"target positions: ${positions.toList}")
       val bottomest = positions.sortWith(_._2 > _._2).headOption
+      //println(s"target position: $bottomest")
       bottomest match {
         case Some(b) =>
           val newState = state.moveCurrentUnit(b)
@@ -88,6 +90,7 @@ object BottomSolver {
   }
 
   def getBottomUnitPositions(state: SolverState, unit: UnitDef): Stream[Position] = {
+    print(".")
     val lift = unit.members.map(_.y).max - unit.pivot.y
     val bottoms = getBottomPositions(state) map { case (x, y) => (x, y - lift) }
 

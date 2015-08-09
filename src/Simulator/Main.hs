@@ -21,8 +21,8 @@ options =
   --, Option ['i'] [] (OptArg Index "command_index") "Execute number of commands up to the index"
   ]
 
-simulate :: [Char] -> GameInput -> GameState
-simulate commands ginput = GameState {}
+simulate :: [Char] -> GameInput -> [GameState]
+simulate commands ginput = [GameState {}]
   
 loadProblem :: String -> IO (Maybe GameInput)
 loadProblem file = do

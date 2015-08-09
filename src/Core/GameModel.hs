@@ -35,8 +35,9 @@ data GameState = GameState {
   } deriving (Show, Eq)
 
 data MoveDirection = E | W | SE | SW deriving (Show, Eq)
-data TurnDirection = Clockwise | CounterClockwise deriving (Show, Eq)
-  
+data TurnDirection = CW | CCW deriving (Show, Eq)
+data Command = MoveDirection | TurnDirection deriving (Show, Eq)
+
 data GameInput = GameInput {
     gameiId           :: Int
   , gameiUnits        :: [Unit]

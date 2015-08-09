@@ -11,14 +11,14 @@ import Control.Applicative ((<*>), (<$>), pure)
 
 type UnitStates = [Unit]
 
-runCommand :: Char -> GameState -> GameState
+runCommand :: Command -> GameState -> GameState
 runCommand = undefined
 
 move :: (Unit, UnitStates) -> MoveDirection -> (Unit, UnitStates)
 move (unit, states) d =
   (Unit {
     members = V.map (translate d) (members unit),
-    pivot   = (translate d) (pivot unit)
+    pivot   = translate d (pivot unit)
     },
    states)
   where
@@ -31,8 +31,43 @@ move (unit, states) d =
     deltaX y | even y    = 0
              | otherwise = -1
 
+-- TODO:
+-- port the code from there: https://github.com/ForNeVeR/icfpc-2015/blob/b53b2675f37e888689181f8e9540b805120c3ab6/src/main/scala/ru/org/codingteam/icfpc/Emulator.scala#L225
+--
 turn :: (Unit, UnitStates) -> TurnDirection -> (Unit, UnitStates)
-turn = undefined
+turn (unit, state) d = (rotate d unit, state)
+  where
+    rotate :: TurnDirection -> Unit -> Unit
+    rotate d u = u { members = V.map (_rotate (cc d) u) (members u) }
+      where
+        cc :: TurnDirection -> Double
+        cc CW  = -1.0
+        cc CCW = 1.0
+
+    _rotate :: Double -> Unit -> Cell -> Cell
+    _rotate cc unit (Cell cx cy) =
+      let dcx   = fromIntegral cx 
+          dcy   = fromIntegral cy
+          pvt   = pivot unit
+          pvtX  = fromIntegral (x pvt)
+          pvtY  = fromIntegral (y pvt)
+          v     = cc * (dcy - pvtY)
+          u     = dcx - pvtX
+          -- frndr = if even cy then ceiling else floor
+          
+          xx = u - fromIntegral (frndr cy (v / 2.0))
+          yy = v
+          zz = 0.0 - dcx - dcy
+
+          (rx, ry, rz) = (xx + yy + 0.0, -- x
+                          0.0 + yy + zz, -- y
+                          xx + 0.0 + zz) -- z
+      in
+       Cell (round (pvtX + rx + fromIntegral (frndr cy (ry / 2.0)))) (round (pvtY + cc + ry))
+      where
+        frndr :: (RealFrac a, Integral b) => Int -> (a -> b)
+        frndr y | even y    = ceiling
+                | otherwise = floor
 
 hit :: Board -> (Unit, UnitStates) -> Bool
 hit board ustates = isJust $ hitmyself <$> hitwall (board, ustates)

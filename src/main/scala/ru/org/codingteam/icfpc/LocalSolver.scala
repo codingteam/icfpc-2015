@@ -19,7 +19,7 @@ case class Solution(pathCost: Long, estimatedCost: Long, position: Position,
 }
 
 object LocalSolver {
-    def findPath(field: Field, unit: UnitDef, pos: Position):
+    def findPath(field: Field, unit: UnitDef, pos: Position, toLock : Boolean):
     Option[List[Command]] = {
         // the lower the cost the better
         implicit val SolutionOrderer = new Ordering[Solution] {
@@ -46,22 +46,28 @@ object LocalSolver {
         while (!openset.isEmpty && solution == null) {
             val current = openset.dequeue
             if(current.position == pos) {
-                // great, we've found a solution! Now let's find one final
-                // command that will lock the unit in place
-                val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
-                                                      current.position._2 - unit.pivot.y)
-                val dirs = for (dir <- Direction.values if emul.willLock(translated, Move(dir)))
-                                yield dir
-                if (dirs.isEmpty) {
-                    println(s"No filled neighbours for ${current.position}")
-                    return None
-                }
-                val lockDir = dirs.head
+                val result =
+                    if (toLock) {
+                        // great, we've found a solution! Now let's find one final
+                        // command that will lock the unit in place
+                        val translated = emul.translate(unit)(current.position._1 - unit.pivot.x,
+                            current.position._2 - unit.pivot.y)
+                        val dirs = for (dir <- Direction.values if emul.willLock(translated, Move(dir)))
+                            yield dir
+                        if (dirs.isEmpty) {
+                            println(s"No filled neighbours for ${current.position}")
+                            return None
+                        }
+                        val lockDir = dirs.head
+                        Move(lockDir) :: current.commands
+                    } else {
+                        current.commands
+                    }
 
                 solution = new Solution(current.pathCost,
                                         current.estimatedCost,
                                         current.position,
-                                        Move(lockDir) :: current.commands)
+                                        result)
             } else {
                 if (closedset.add(current)) {
 

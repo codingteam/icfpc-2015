@@ -98,7 +98,7 @@ object BottomSolver {
     bottoms.filter({ case (x, y) =>
       emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y)) &&
         emulator.anyNeighborNotEmpty(unit, x, y) &&
-        LocalSolver.findPath(state.field, unit, (x, y)).isDefined
+        LocalSolver.findPath(state.field, unit, (x, y), false).isDefined
     })
   }
 

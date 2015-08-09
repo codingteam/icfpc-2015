@@ -20,7 +20,7 @@ object Strategist {
       val cmds = steps.filter(_.lastMovedUnit.isDefined).toStream.map(
         step => {
           println(s"Local solver target: ${step.targetPosition.get}")
-          LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get)
+          LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get, true)
         }
       )
 

@@ -214,13 +214,19 @@ class Emulator (val field : Field) {
     result
   }
 
-  // return true if it is possible to spawn new unit
-  def spawnUnit(unit : UnitDef) : Boolean = {
+
+  def getSpawnPositionShifts(unit: UnitDef): (Int, Int) = {
     val unitSize = Utils.getUnitActualSize(unit)
     val cY = - unit.members.map(_.y).min
     val minX = unit.members.map(_.x).min
     val cX = (field.width - unitSize._1) / 2 - minX
     //println(s"$cX = (${field.width} - ${unitSize._1}) / 2 - $minX")
+    (cX, cY)
+  }
+
+  // return true if it is possible to spawn new unit
+  def spawnUnit(unit : UnitDef) : Boolean = {
+    val (cX, cY) = getSpawnPositionShifts(unit)
     val translated = translate(unit)(cX, cY)
     currentUnit = translated
     return check(currentUnit)
@@ -271,16 +277,19 @@ class Emulator (val field : Field) {
       (pvtY + clockwiseCoeff * rotated.y).toInt)
   }
 
-  // Return true if the unit is locked as a result of command execution
-  def executeCommand(cmd : Command) : Boolean = {
-    currentUnit = cmd match {
+  // Return true if the unit will be locked as a result of command execution
+  def willLock(unit: UnitDef, cmd : Command) : Boolean = {
+    val result = cmd match {
                     case Move(direction) =>
-                      mapUnit(currentUnit)(Emulator.translateCoord(direction))
+                      mapUnit(unit)(Emulator.translateCoord(direction))
                     case Turn(clockwise) =>
-                      mapUnit(currentUnit)(rotateCoord(clockwise))
+                      mapUnit(unit)(rotateCoord(clockwise))
                   }
-    return ! check(currentUnit)
+    return ! check(result)
   }
+
+  // Return true if the unit is locked as a result of command execution
+  def executeCommand(cmd : Command) : Boolean = willLock(currentUnit, cmd)
 
   // Lock current unit: mark all corresponding cells as Full
   def lock(unit : UnitDef) : Unit = {

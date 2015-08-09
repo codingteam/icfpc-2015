@@ -50,34 +50,36 @@ object Application extends App {
       MapPrinter.printMap(field)
     }
 
-    var good = new ListBuffer[(Int,Int,Int)]()
+    var good = new ListBuffer[(Int, Int, Int)]()
     val outs = field.sourceSeeds map { seed =>
-                    val commands = Strategist.solution(field, seed)
-                    mbScores match {
-                      case Some(scoresFile) =>
-                        val maxOldScore = Utils.getScore(scoresFile, field.id, seed).max
-                        val emulator = new Emulator(Field.from(field))
-                        emulator.load(field)
-                        emulator.initSourceWithSeed(seed)
-                        emulator.emulate(commands)
-                        val newScore = emulator.score
-                        println(s"Seed $seed: Maximum old score: $maxOldScore; new score: $newScore")
-                        if (newScore > maxOldScore) {
-                          good += ((seed, maxOldScore, newScore))
-                        }
+      val commands = Strategist.solution(field, seed)
+      mbScores match {
+        case Some(scoresFile) =>
+          val maxOldScore = Utils.getScore(scoresFile, field.id, seed).max
+          val emulator = new Emulator(Field.from(field))
+          emulator.load(field)
+          emulator.initSourceWithSeed(seed)
+          emulator.emulate(commands)
+          val newScore = emulator.score
+          println(s"Seed $seed: Maximum old score: $maxOldScore; new score: $newScore")
+          if (newScore > maxOldScore) {
+            good += ((seed, maxOldScore, newScore))
+          }
 
-                      case None =>
-                    }
-                    val tag = s"seed$seed@" + new SimpleDateFormat("HH:mm:z").format(new Date())
-                    OutputDef(field.id, seed, tag, Utils.encode(commands))
-                  }
-    if (! good.isEmpty && mbScores.isDefined) {
+        case None =>
+      }
+      val tag = s"seed$seed@" + new SimpleDateFormat("HH:mm:z").format(new Date())
+      OutputDef(field.id, seed, tag, Utils.encode(commands))
+    }
+    if (!good.isEmpty && mbScores.isDefined) {
       println("Better solutions:")
       good.map(s =>
         println(s"  Seed ${s._1}: was ${s._2}, new ${s._3}")
       )
+      outs.filter(out => good.map(_._1).contains(out.seed))
+    } else {
+      outs
     }
-    outs
   }
 
   val arguments = parseArgs()

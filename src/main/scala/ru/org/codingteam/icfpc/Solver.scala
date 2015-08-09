@@ -9,13 +9,28 @@ object Solver {
   case class SolverState(field: Field,
                          units: Vector[UnitDef]) {
 
-    def currentUnit = units.head
+    def currentUnit = units.headOption
+
     def moveCurrentUnit(position: Position): SolverState = {
       val emulator = new Emulator(Field.from(field))
-      val unit = emulator.translate(currentUnit)(position._1, position._2)
+      val unit = emulator.translate(currentUnit.get)(position._1, position._2)
       emulator.lock(unit)
 
       this.copy(field = Field.from(emulator), units = units.tail)
+    }
+
+    def canPlaceUnit: Boolean = {
+      currentUnit exists { unit =>
+        val emulator = new Emulator(field)
+        for {x <- 0.until(field.width)
+             y <- 0.until(field.height)} {
+          if (emulator.check(emulator.translate(unit)(x, y))) {
+            return true
+          }
+        }
+
+        return false
+      }
     }
   }
 
@@ -51,7 +66,9 @@ object Solver {
   }
 
   def heuristic(state: SolverState): Int = state.field.minimalGape
-  private def goalAchieved(state: SolverState): Boolean = state.units.isEmpty
+
+  def goalAchieved(state: SolverState): Boolean = !state.canPlaceUnit
+
   private def reconstructPath(cameFrom: Map[SolverState, SolverState], goal: SolverState): Seq[SolverState] = {
     var totalPath = Vector[SolverState]()
     var current = goal
@@ -65,17 +82,16 @@ object Solver {
 
   private def distBetween(current: SolverState, neighbor: SolverState): Int = 1
 
-  private def neighbours(state: SolverState): Seq[SolverState] = {
+  private def neighbours(state: SolverState): Stream[SolverState] = {
     val unit = state.currentUnit
-    val positions = getValidPositions(state.field, unit)
+    val positions = getValidPositions(state.field, unit.get)
     positions.map(state.moveCurrentUnit)
   }
 
-  def getValidPositions(field: Field, unit: UnitDef): Seq[Position] = {
+  def getValidPositions(field: Field, unit: UnitDef): Stream[Position] = {
     val emulator = new Emulator(field)
-    for { x <- 0.until(field.width)
-          y <- 0.until(field.height)
-          if emulator.check(emulator.translate(unit)(x, y)) && emulator.anyNeighborNotEmpty(x, y)
-    } yield (x, y)
+    val coords = (for {x <- 0.until(field.width)
+                       y <- 0.until(field.height)} yield (x, y)).toStream
+    coords.filter({ case (x, y) => emulator.check(emulator.translate(unit)(x, y)) && emulator.anyNeighborNotEmpty(x, y) })
   }
 }

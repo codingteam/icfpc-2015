@@ -46,12 +46,14 @@ Team
 Team members in alphabetical order:
 
 - [ForNeVeR][fornever]
+- [grouzen][]
 - [Minoru][minoru]
 - [portnov][]
 - [rexim][]
 - [ulidtko][]
 
 [fornever]: https://github.com/ForNeVeR
+[grouzen]: https://github.com/grouzen
 [minoru]: https://github.com/Minoru
 [portnov]: https://github.com/portnov
 [rexim]: https://github.com/rexim

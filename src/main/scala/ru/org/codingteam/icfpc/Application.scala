@@ -1,5 +1,7 @@
 package ru.org.codingteam.icfpc
 
+import java.util.Date
+
 import ru.org.codingteam.icfpc.definitions.{OutputDef, FieldDef}
 
 import scala.concurrent.duration._
@@ -46,7 +48,7 @@ object Application extends App {
 
     field.sourceSeeds map { seed =>
       val commands = Strategist.solution(field, seed)
-      OutputDef(field.id, seed, null, Utils.encode(commands))
+      OutputDef(field.id, seed, "command" + new Date().getTime, Utils.encode(commands))
     }
   }
 

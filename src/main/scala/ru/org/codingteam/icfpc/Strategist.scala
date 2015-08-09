@@ -12,7 +12,7 @@ object Strategist {
     emulator.load(problem)
     emulator.initSourceWithSeed(seed)
 
-    solve(emulator, SolverState(Field.from(emulator), units))
+    solve(emulator, SolverState(Field.from(emulator), units)).init // Remove the last turn
   }
 
   private def solve(emulator: Emulator, state: SolverState, commands: Seq[Command] = List()): Seq[Command] = {

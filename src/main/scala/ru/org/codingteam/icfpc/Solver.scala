@@ -50,7 +50,7 @@ object Solver {
     sys.error("Cannot find a way")
   }
 
-  private def heuristic(state: SolverState): Int = state.units.size
+  def heuristic(state: SolverState): Int = state.field.minimalGape
   private def goalAchieved(state: SolverState): Boolean = state.units.isEmpty
   private def reconstructPath(cameFrom: Map[SolverState, SolverState], goal: SolverState): Seq[SolverState] = {
     var totalPath = Vector[SolverState]()

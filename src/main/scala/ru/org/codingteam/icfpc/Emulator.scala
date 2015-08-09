@@ -96,6 +96,16 @@ class Field(val width : Int, val height : Int) {
       print("|\n")
     }
   }
+
+  def minimalGape: Int = {
+    def gape(y: Int): Int = {
+      val cells = for (x <- 0.until(width)) yield this(x, y)
+      cells.count(_ == CellState.Empty)
+    }
+
+    val gapes = for (y <- 0.until(height)) yield gape(y)
+    gapes.min
+  }
 }
 
 case class StepResult(gameOver : Boolean, toLock : Boolean)

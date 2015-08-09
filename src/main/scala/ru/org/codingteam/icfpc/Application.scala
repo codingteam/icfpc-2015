@@ -80,6 +80,8 @@ object Application extends App {
       good.map(s =>
         println(s"  Seed ${s._1}: was ${s._2}, new ${s._3}")
       )
+      val avg = good.map(_._3).sum / good.length
+      println(s"Average new score: $avg")
       outs.filter(out => good.map(_._1).contains(out.seed))
     } else {
       outs

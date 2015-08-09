@@ -291,7 +291,7 @@ class Emulator (val field : Field) {
     case Move(direction) =>
       mapUnit(unit)(Emulator.translateCoord(direction))
     case Turn(clockwise) =>
-      mapUnit(unit)(rotateCoord(clockwise))
+      mapUnit(unit)(rotate(unit.pivot)(clockwise))
     }
 
   // Return true if the unit will be locked as a result of command execution

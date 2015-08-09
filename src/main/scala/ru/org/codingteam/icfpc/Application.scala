@@ -52,7 +52,7 @@ object Application extends App {
       val commands = Strategist.solution(field, seed)
       mbScores match {
         case Some(scoresFile) =>
-          val maxOldScore = Utils.getScore(scoresFile, field.id).max
+          val maxOldScore = Utils.getScore(scoresFile, field.id, seed).max
           val emulator = new Emulator(Field.from(field))
           emulator.load(field)
           emulator.initSourceWithSeed(seed)

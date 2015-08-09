@@ -121,9 +121,10 @@ object Utils {
     read[List[Score]](content)
   }
 
-  def getScore(filePath : String, problemId : Int) : List[Int] = {
+  def getScore(filePath : String, problemId : Int, seed : Int) : List[Int] = {
     val scores = readScores(filePath)
-    (for (score <- scores if score.problemId == problemId) yield score.score)
+    for (score <- scores if (score.problemId == problemId) && (score.seed == seed))
+      yield score.score
   }
 
   // Size of only unit itself, without empty margins

@@ -9,7 +9,7 @@ import ru.org.codingteam.icfpc.visual.Visualizator
 
 class ReplayController(visualizator: Visualizator, filePath: String, solution: String, srcIndex: Int = 0) extends Controller(srcIndex) with ActionListener {
   private val emulator = loadProblem(filePath)
-  private val timer = new Timer(500, this)
+  private val timer = new Timer(50, this)
   private var commands = Utils.decode(solution)
 
   visualizator.visualizeState(emulator)

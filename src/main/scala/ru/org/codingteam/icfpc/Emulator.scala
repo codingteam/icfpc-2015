@@ -151,6 +151,10 @@ class Emulator (val field : Field) {
     initSourceWithSeed(seed)
   }
 
+  def initSource(source: Iterator[UnitDef]): Unit = {
+    this.source = source
+  }
+
   private var source : Iterator[UnitDef] = _
   private var previousUnitClearedLines = 0
 

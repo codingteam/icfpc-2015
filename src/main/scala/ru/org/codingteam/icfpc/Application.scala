@@ -1,5 +1,6 @@
 package ru.org.codingteam.icfpc
 
+import java.text.SimpleDateFormat
 import java.util.Date
 
 import ru.org.codingteam.icfpc.definitions.{OutputDef, FieldDef}
@@ -62,7 +63,8 @@ object Application extends App {
 
         case None =>
       }
-      OutputDef(field.id, seed, "command" + new Date().getTime, Utils.encode(commands))
+      val tag = s"seed$seed@" + new SimpleDateFormat("HH:mm:z").format(new Date())
+      OutputDef(field.id, seed, tag, Utils.encode(commands))
     }
   }
 

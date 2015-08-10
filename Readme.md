@@ -3,7 +3,11 @@ ICFPC 2015
 
 That is our solution for ICFP Contest 2015.
 
-_NOTE_: we were about 151 in the final qualification leaderboard.
+_NOTE_: we are 151st in the [final qualification leaderboard][final-leaderboard]
+(requires JavaScript; [mirror][final-leaderboard-mirror]).
+
+[final-leaderboard]: http://icfpcontest.org/leader_board.html
+[final-leaderboard-mirror]: https://blog.debiania.in.ua/misc/icfpc-2015-leader_board.html
 
 Dependencies
 ------------

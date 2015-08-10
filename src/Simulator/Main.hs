@@ -77,8 +77,8 @@ renderASCII :: GameState -> IO ()
 renderASCII gs = do
   let board  = gamesBoard gs
       unit   = gamesUnit gs
-      width  = boardWidth board - 2
-      height = boardHeight board - 2
+      width  = boardWidth board
+      height = boardHeight board
       filled = filledCells board
 
   printf "Size: %dx%d\n\n" width height

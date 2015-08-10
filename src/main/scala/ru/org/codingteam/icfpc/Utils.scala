@@ -109,10 +109,10 @@ object Utils {
     em.initSource(srcIdx)
     val cmds = Utils.decode(commands)
     val cmdsCnt = em.emulate(cmds)
-    println(s"Executed $cmdsCnt commands")
+    //println(s"Executed $cmdsCnt commands")
     print("\n")
     em.printField()
-    println(s"\nScore: ${em.score}")
+    //println(s"\nScore: ${em.score}")
     return em.score
   }
 

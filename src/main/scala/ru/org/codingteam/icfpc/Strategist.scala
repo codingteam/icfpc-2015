@@ -36,7 +36,7 @@ object Strategist {
 
           solve(emulator, state_, phrases, commands ++ commands_)
         case _ =>
-          println("!!!Terminated prematurely; please report")
+          //println("!!!Terminated prematurely; please report")
           commands ++ commands_.take(commandCount)
       }
     }

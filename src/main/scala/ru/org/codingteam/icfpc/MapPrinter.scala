@@ -27,23 +27,9 @@ object MapPrinter {
     }
   }
 
-  def printMap(fd : FieldDef) : Unit = {
+  def printMap(fd : FieldDef) : Unit = {}
 
-    print2d(fd.filled, fd.width, fd.height, "XXX", None)
-
-    for (unit <- fd.units) {
-      println("\nUnit:")
-      Utils.getUnitSize(unit) match {
-        case (width, height) =>
-          print2d(unit.members, width, height, "UUU", Some(unit.pivot))
-      }
-    }
-  }
-
-  def printUnit(unit : UnitDef) : Unit = {
-    val size = Utils.getUnitSize(unit)
-    print2d(unit.members, size._1, size._2, "UUU", Some(unit.pivot))
-  }
+  def printUnit(unit : UnitDef) : Unit = {}
 
   val testMap : FieldDef =
     FieldDef(1,Vector.empty,6,6,

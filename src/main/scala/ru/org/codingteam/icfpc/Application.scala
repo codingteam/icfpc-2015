@@ -65,7 +65,7 @@ object Application extends App {
           emulator.initSourceWithSeed(seed)
           emulator.emulate(commands)
           val newScore = emulator.score
-          println(s"Seed $seed: Maximum old score: $maxOldScore; new score: $newScore")
+          //println(s"Seed $seed: Maximum old score: $maxOldScore; new score: $newScore")
           if (newScore > maxOldScore) {
             good += ((seed, maxOldScore, newScore))
           }
@@ -76,10 +76,12 @@ object Application extends App {
       OutputDef(field.id, seed, tag, Utils.encode(commands))
     }
     if (!good.isEmpty && mbScores.isDefined) {
-      println("Better solutions:")
+      //println("Better solutions:")
+      /*
       good.map(s =>
         println(s"  Seed ${s._1}: was ${s._2}, new ${s._3}")
       )
+      */
       outs.filter(out => good.map(_._1).contains(out.seed))
     } else {
       outs

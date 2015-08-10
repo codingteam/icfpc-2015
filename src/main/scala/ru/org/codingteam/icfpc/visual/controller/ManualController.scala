@@ -47,13 +47,13 @@ class ManualController(visualizator: Visualizator, filePath: String) extends Con
           StepResult(false, false)
         }
         case KeyEvent.VK_P => {
-          println(Utils.encode(commands.toList))
+          //println(Utils.encode(commands.toList))
           StepResult(false, false)
         }
         case _ => StepResult(false, false)
       }
       if (res.gameOver) {
-        println(Utils.encode(commands.toList))
+        //println(Utils.encode(commands.toList))
       }
 
       visualizator.visualizeState(emulator)

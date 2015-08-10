@@ -7,7 +7,7 @@ import ru.org.codingteam.icfpc.visual.controller.{ReplayController, ManualContro
 
 object VisualizatorApplication {
   def main(args: Array[String]): Unit = {
-    println(args.toList)
+    //println(args.toList)
 
     val board = new Board
     val frame = new JFrame

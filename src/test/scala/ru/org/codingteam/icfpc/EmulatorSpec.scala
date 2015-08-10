@@ -30,7 +30,7 @@ class EmulatorSpec extends FlatSpec with Matchers{
     val eiei = Stream.continually(ei.toStream).flatten.take(200)
 
     val cmdsCnt = em.emulate(eiei)
-    println(s"Executed $cmdsCnt commands")
+    //println(s"Executed $cmdsCnt commands")
     print("\n")
     em.printField()
   }

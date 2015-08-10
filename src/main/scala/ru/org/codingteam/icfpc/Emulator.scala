@@ -346,26 +346,26 @@ class Emulator (val field : Field, phrases: Set[String]) {
   }
 
   def emulatorStep(cmd : Command) : StepResult = {
-    println(s"Execute: $cmd")
+    //println(s"Execute: $cmd")
     val oldUnit = currentUnit
     val toLock = executeCommand(cmd)
     var gameOver = false
     if (toLock) {
-      println("Unit locked.")
+      //println("Unit locked.")
       lock(oldUnit)
       val cleared = field.clearRows()
       if (cleared > 0) {
-        println(s"$cleared rows cleared.")
+        //println(s"$cleared rows cleared.")
       }
 
       moveScore += getMoveScore(oldUnit, cleared)
       previousUnitClearedLines = cleared
 
       val nextOk = spawnNextUnit()
-      println("Spawning next unit:")
+      //println("Spawning next unit:")
       MapPrinter.printUnit(currentUnit)
       if (! nextOk) {
-        println("Game over.")
+        //println("Game over.")
         gameOver = true
       }
     }
@@ -382,7 +382,7 @@ class Emulator (val field : Field, phrases: Set[String]) {
     var count = 0
     if (currentUnit == null) {
       spawnNextUnit()
-      println("First unit:")
+      //println("First unit:")
       MapPrinter.printUnit(currentUnit)
     }
 

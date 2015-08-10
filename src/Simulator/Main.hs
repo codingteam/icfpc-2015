@@ -37,15 +37,24 @@ runOpts (SimOptions file step) = do
 
   case maybeGameInput of
     Just g ->
-      let board = initBoard g in
-      printBoard board
+      let units = gameiUnits g
+          gs    = GameState { gamesBoard = initBoard g
+                            , gamesUnit  = head units
+                            , gamesUnits = tail units
+                            , gamesScore = 0
+                            , gamesEnded = False
+                            }
+      in
+       renderASCII gs
     Nothing -> fail "Failed to load problem file"
 
 -- Just for a debug
 -- Didn't get why it doesn't print '0'
-printBoard :: Board -> IO ()
-printBoard board = do
-  let width  = boardWidth board - 2
+renderASCII :: GameState -> IO ()
+renderASCII gs = do
+  let board  = gamesBoard gs
+      unit   = gamesUnit gs
+      width  = boardWidth board - 2
       height = boardHeight board - 2
       fields = boardFields board
 
@@ -57,9 +66,13 @@ printBoard board = do
   imapM_ (\x _ -> printf "%3.d" (x - 1)) $ V.slice 0 (V.length v0) v0
   putStr "\n\n"
   
-  imapM_ (\y v -> printf "%-3.d" (y - 1) >>
-          V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
-          >> putStr "\n") $ V.slice 0 (V.length fields) fields
+  imapM_ (\y v ->
+           do
+             printf "%-3.d" (y - 1)
+             if even y then putChar ' ' else return ()
+             V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
+             putStr "\n"
+         ) $ V.slice 0 (V.length fields) fields
 
   putStr "\n     ------------------------------------ \n\n"
     

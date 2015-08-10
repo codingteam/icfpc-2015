@@ -24,11 +24,11 @@ data Board = Board {
   } deriving (Show, Eq)
 
 data GameState = GameState {
-    board  :: Board
-  , cunit  :: Unit -- current unit
-  , runits :: [Unit] -- rest units
-  , score  :: Int
-  , ended  :: Bool
+    gamesBoard  :: Board
+  , gamesUnit   :: Unit -- current unit
+  , gamesUnits  :: [Unit] -- rest units
+  , gamesScore  :: Int
+  , gamesEnded  :: Bool
   } deriving (Show, Eq)
 
 data MoveDirection = E | W | SE | SW deriving (Show, Eq, Ord)

@@ -8,7 +8,6 @@ import GHC.Generics (Generic)
 
 import Data.List (findIndices)
 
-import Control.Monad.State
 import Control.Applicative
 
 import Core
@@ -20,7 +19,7 @@ data PhaseState = PhaseState {
 	offsetY :: !Int,
 	rotation :: !Int,
 	symmetry :: !Int
-}	deriving (Eq, Generic)
+}	deriving (Eq, Generic, Show)
 instance Hashable PhaseState
 
 
@@ -30,21 +29,18 @@ unitSymmetry u = findIndices (==u) (rotateUnit <$> [0..] <*> pure u) !! 1
 
 type PossibleMoves = H.HashMap PhaseState CommandHistory
 calcUnitMoves :: Board -> Unit -> PossibleMoves
-calcUnitMoves board unit = snd $ execState go (start, start)
+calcUnitMoves board unit = snd $ go (start, start)
 	where
 		start = H.singleton (PhaseState 0 0 0 (unitSymmetry unit)) []
 
-		go :: State (PossibleMoves, PossibleMoves) ()
-		go = do
-			(prevmoves, allmoves) <- get
+		go :: (PossibleMoves, PossibleMoves) -> (PossibleMoves, PossibleMoves)
+		go (prevmoves, allmoves) = if H.null prevmoves then (prevmoves, allmoves) else go newstate
+			where
+				moves = H.filterWithKey (\k _ -> not $ H.member k allmoves)
+					  $ H.filterWithKey (\k _ -> not $ hitTest (unitPhase k unit) board)
+					  $ H.fromList $ concatMap nextStates $ H.toList prevmoves
 
-			let moves = H.filterWithKey (\k _ -> not $ H.member k allmoves)
-			          $ H.filterWithKey (\k _ -> not $ hitTest (unitPhase k unit) board)
-				      $ H.fromList $ concatMap nextStates $ H.toList prevmoves
-
-			put (moves, H.union allmoves moves)
-
-			if H.null moves then return () else go
+				newstate = (moves, H.union allmoves moves)
 
 		nextStates :: (PhaseState, CommandHistory) -> [(PhaseState, CommandHistory)]
 		nextStates (s, h) = zip states histories
@@ -57,7 +53,7 @@ calcUnitMoves board unit = snd $ execState go (start, start)
 phaseCmd :: Command -> PhaseState -> PhaseState
 phaseCmd (Move E) s = s { offsetX = offsetX s - 1 }
 phaseCmd (Move W) s = s { offsetX = offsetX s + 1 }
-phaseCmd (Move SE) s = s { offsetX = offsetX s - 1, offsetY = 1 + offsetY s}
+phaseCmd (Move SE) s = s { offsetX = offsetX s - 1, offsetY = 1 + offsetY s} -- FIXME parity
 phaseCmd (Move SW) s = s { offsetX = offsetX s + 1, offsetY = 1 + offsetY s}
 phaseCmd (Turn CW) s = s { rotation = (rotation s - 1) `mod` symmetry s }
 phaseCmd (Turn CCW) s = s { rotation = (rotation s + 1) `mod` symmetry s }

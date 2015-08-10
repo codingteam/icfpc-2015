@@ -35,6 +35,23 @@ initBoard g = let w  = 2 + gameiWidth g
     applyFilled vec ((y,cells):cs) =
       flip applyFilled cs $ vec V.// [(y + 1, (vec V.! (y + 1) V.// map (\(Cell x y) -> (x + 1, Field True (Cell x y))) cells))]
 
+shiftSpawnedUnit :: Unit -> Int -> Unit
+shiftSpawnedUnit unit boardW =
+  let ms    = members unit
+      pvt   = pivot unit
+      msx   = V.map (\(Cell x _) -> x) ms
+      uminX = extremum min msx
+      umaxX = extremum max msx
+      uw    = umaxX - uminX + 1
+      shift = (boardW - uw) `div` 2
+  in
+   unit {
+     members = V.map (\(Cell x y) -> Cell (x + shift) y) ms,
+     pivot   = Cell ((x pvt) + shift) (y pvt)
+     }
+  where
+    extremum fn xs = V.foldr fn (V.head xs) xs
+
 move :: (Unit, UnitStates) -> MoveDirection -> (Unit, UnitStates)
 move (unit, states) d =
   (Unit {
@@ -107,8 +124,8 @@ hitConfigs (unit, s:ss) | (pivot unit) == (pivot s) &&
   where
     hitMembers pm sm = sort (V.toList pm) == sort (V.toList sm)
     
-hitWall :: (Board, (Unit, UnitStates)) -> Bool
-hitWall (board, (unit, states)) = hit' (boardFields board) (members unit)
+hitWall :: Unit -> Board -> Bool
+hitWall unit board = hit' (boardFields board) (members unit)
   where
     hit' :: V.Vector (V.Vector Field) -> V.Vector Cell -> Bool
     hit' fields members = _hit fields members (V.length members)
@@ -116,10 +133,12 @@ hitWall (board, (unit, states)) = hit' (boardFields board) (members unit)
         _hit fields members 0 = False
         _hit fields members n =
           let mcell = members V.! (n - 1)
-              field = fields V.! y mcell V.! x mcell
+              field = fields V.! (y mcell) V.! (x mcell)
           in
-           filled field
-
+           case filled field of
+             False -> _hit fields members (n - 1)
+             _     -> True
+    
 
 -- hit :: Board -> (Unit, UnitStates) -> Bool
 -- hit board ustates = isJust $ hitmyself <$> hitwall (board, ustates)

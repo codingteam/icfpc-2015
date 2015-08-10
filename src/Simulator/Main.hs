@@ -11,9 +11,6 @@ import Data.Aeson (encode, decode, eitherDecode)
 import Data.Maybe
 import Options.Applicative
 import Text.Printf (printf)
-
-simulate :: [Char] -> Maybe Int -> GameInput -> [GameState]
-simulate commands index ginput = [GameState {}]
                                  
 loadProblem :: String -> IO (Maybe GameInput)
 loadProblem file = do
@@ -36,7 +33,7 @@ runOpts (SimOptions file step) = do
   maybeGameInput <- loadProblem file
 
   case maybeGameInput of
-    Just g ->
+    Just g -> do
       let units = gameiUnits g
           gs    = GameState { gamesBoard = initBoard g
                             , gamesUnit  = head units
@@ -44,8 +41,33 @@ runOpts (SimOptions file step) = do
                             , gamesScore = 0
                             , gamesEnded = False
                             }
-      in
-       renderASCII gs
+      
+      renderASCII gs -- initial rendering
+      loopUntilTheEndOfTheWorld gs
+        
+      where
+        loopUntilTheEndOfTheWorld :: GameState -> IO ()
+        loopUntilTheEndOfTheWorld gs = do
+          let unit    = gamesUnit gs
+              board   = gamesBoard gs
+              units   = gamesUnits gs
+              shifted = shiftSpawnedUnit (gamesUnit gs) (boardWidth board)
+
+          print unit
+          print shifted
+          
+          let ngs     =
+                if hitWall shifted board
+                then gs { gamesEnded = True }
+                else gs { gamesUnit = shifted, gamesUnits = tail units }
+          print (gamesEnded ngs)
+          
+          case gamesEnded ngs of
+            False -> do
+              renderASCII ngs
+              loopUntilTheEndOfTheWorld ngs
+            _     -> return ()
+          
     Nothing -> fail "Failed to load problem file"
 
 -- Just for a debug

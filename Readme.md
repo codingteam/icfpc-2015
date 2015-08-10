@@ -3,7 +3,7 @@ ICFPC 2015
 
 That is our solution for ICFP Contest 2015.
 
-_NOTE_: we were about 153 in the qualification round before the leaderboard gone down.
+_NOTE_: we were about 151 in the final qualification leaderboard.
 
 Dependencies
 ------------

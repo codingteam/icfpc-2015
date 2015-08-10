@@ -55,4 +55,4 @@ hitTest unit board = any isFilledOnBoard (H.toList (members unit))
       | y c < 0      = True
       | x c >= boardWidth board = True
       | y c >= boardHeight board = True
-      | otherwise = not . H.member c . filledCells $ board
+      | otherwise = H.member c . filledCells $ board

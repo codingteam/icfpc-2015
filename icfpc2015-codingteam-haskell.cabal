@@ -59,6 +59,7 @@ executable simulator
   -- Other library packages from which modules are imported.
   build-depends:       aeson,
                        unordered-containers,
+                       hashable,
                        bytestring,
                        split,
                        vector,
@@ -81,6 +82,7 @@ executable webserver
   build-depends:      bytestring,
                       vector,
                       unordered-containers,
+                      hashable,
                       aeson,
 
                       network >= 2.6,

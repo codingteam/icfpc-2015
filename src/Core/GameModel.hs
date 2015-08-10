@@ -4,14 +4,17 @@ module Core.GameModel where
 
 import GHC.Generics (Generic)
 import Data.Vector
+import qualified Data.HashSet as H
+import Data.Hashable (Hashable)
 
 data Cell = Cell {
     x :: Int
   , y :: Int
   } deriving (Show, Eq, Generic, Ord)
+instance Hashable Cell
 
 data Unit = Unit {
-    members :: Vector Cell
+    members :: H.HashSet Cell
   , pivot :: Cell
   } deriving (Show, Eq, Generic)
 
@@ -59,7 +62,7 @@ data GameOutput = GameOutput {
 
 
 overCells :: (Cell -> Cell) -> Unit -> Unit
-overCells f u = Unit { members = V.map f (members u), pivot = f (pivot u) }
+overCells f u = Unit { members = H.map f (members u), pivot = f (pivot u) }
 
 translateUnit :: (Int, Int) -> Unit -> Unit
 translateUnit delta = overCells (translateCell delta)

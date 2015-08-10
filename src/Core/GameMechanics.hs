@@ -5,6 +5,8 @@ module Core.GameMechanics where
 import Core.GameModel
 
 import qualified Data.Vector as V
+import qualified Data.HashSet as H
+import Data.Monoid
 import Data.List (sort, nub)
 import Data.Maybe (isJust)
 import Control.Applicative ((<*>), (<$>), pure)
@@ -29,6 +31,22 @@ initBoard g = let w  = 2 + gameiWidth g
     applyFilled vec []   = vec
     applyFilled vec ((y,cells):cs) =
       flip applyFilled cs $ vec V.// [(y + 1, (vec V.! (y + 1) V.// map (\(Cell x y) -> (x + 1, Field True (Cell x y))) cells))]
+
+
+shiftSpawnedUnit :: Unit -> Int -> Unit
+shiftSpawnedUnit unit boardW =
+  let ms    = members unit
+      pvt   = pivot unit
+      msx   = H.map (\(Cell x _) -> x) ms
+      uminX = minimum (H.toList msx)
+      umaxX = maximum (H.toList msx)
+      uw    = umaxX - uminX + 1
+      shift = (boardW - uw) `div` 2
+  in
+   unit {
+     members = H.map (\(Cell x y) -> Cell (x + shift) y) ms,
+     pivot   = Cell ((x pvt) + shift) (y pvt)
+     }
 
 
 --

@@ -57,31 +57,22 @@ shiftSpawnedUnit unit boardW =
 --
 -- Notice!
 -- hitmyself will end the game if the result is True
-    
-hitConfigs :: (Unit, UnitStates) -> Bool
-hitConfigs (unit, [])   = False
-hitConfigs (unit, s:ss) | (pivot unit) == (pivot s) &&
-                          hitMembers (members unit) (members s) = True
-                        | otherwise = hitConfigs (unit, ss)
-  where
-    hitMembers pm sm = sort (V.toList pm) == sort (V.toList sm)
 
     
-hitWall :: Unit -> Board -> Bool
-hitWall unit board = hit' (boardFields board) (members unit)
+flattenBoard :: Board -> [Cell]
+flattenBoard = (map cell) . concat . (map V.toList) . V.toList . boardFields
+
+hitTest :: Unit -> Board -> Bool
+hitTest unit board = any isFilledOnBoard (H.toList (members unit))
   where
-    hit' :: V.Vector (V.Vector Field) -> V.Vector Cell -> Bool
-    hit' fields members = _hit fields members (V.length members)
-      where
-        _hit fields members 0 = False
-        _hit fields members n =
-          let mcell = members V.! (n - 1)
-              field = fields V.! (y mcell) V.! (x mcell)
-          in
-           case filled field of
-             False -> _hit fields members (n - 1)
-             _     -> True
-    
+    isFilledOnBoard :: Cell -> Bool
+    isFilledOnBoard c
+      | x c < 0      = True
+      | y c < 0      = True
+      | x c >= boardWidth board = True
+      | y c >= boardHeight board = True
+      | otherwise = not . null $ filter (==c) (flattenBoard board)
+
 
 -- hit :: Board -> (Unit, UnitStates) -> Bool
 -- hit board ustates = isJust $ hitmyself <$> hitwall (board, ustates)

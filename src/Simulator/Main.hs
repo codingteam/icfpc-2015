@@ -57,7 +57,7 @@ runOpts (SimOptions file step) = do
           print shifted
           
           let ngs     =
-                if hitWall shifted board
+                if hitTest shifted board
                 then gs { gamesEnded = True }
                 else gs { gamesUnit = shifted, gamesUnits = tail units }
           print (gamesEnded ngs)

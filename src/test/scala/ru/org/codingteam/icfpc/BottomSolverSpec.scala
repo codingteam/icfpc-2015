@@ -16,7 +16,7 @@ class BottomSolverSpec extends FlatSpec with Matchers {
       filled = Vector(CellDef(1, 2)),
       sourceLength = 1,
       sourceSeeds = Vector(0))
-    val state = SolverState(Field.from(field), field.units)
+    val state = SolverState(Field.from(field), field.units, Set())
     val bottoms = BottomSolver.getBottomPositions(state).toSet
 
     assert(bottoms === Set((0, 2), (0, 1), (1, 1), (2, 2)))

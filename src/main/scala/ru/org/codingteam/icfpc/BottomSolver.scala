@@ -8,13 +8,14 @@ object BottomSolver {
 
   case class SolverState(field: Field,
                          units: Seq[UnitDef],
+                         phrases: Set[String],
                          lastMovedUnit: Option[UnitDef] = None,
                          targetPosition: Option[Position] = None) {
 
     def currentUnit = units.headOption
 
     def moveCurrentUnit(position: Position): SolverState = {
-      val emulator = new Emulator(Field.from(field))
+      val emulator = new Emulator(Field.from(field), phrases)
 
       val pivot = currentUnit.get.pivot
       val unit = emulator.translate(currentUnit.get)(position._1 - pivot.x, position._2 - pivot.y)
@@ -23,13 +24,14 @@ object BottomSolver {
       SolverState(
         field = Field.from(emulator),
         units = units.tail,
+        phrases,
         currentUnit,
         Some(position))
     }
 
     def canPlaceUnit: Boolean = {
       currentUnit exists { unit =>
-        val emulator = new Emulator(field)
+        val emulator = new Emulator(field, phrases)
         for {x <- 0.until(field.width)
              y <- 0.until(field.height)} {
           if (emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y))) {
@@ -67,7 +69,7 @@ object BottomSolver {
     var state = start
     while (!goalAchieved(state)) {
       val unit = state.currentUnit.get
-      val emulator = new Emulator(state.field)
+      val emulator = new Emulator(state.field, phrases)
       val positions = getBottomUnitPositions(state, unit, phrases)
       val bottomest = positions.sortWith(_._2 > _._2).headOption
       bottomest match {
@@ -91,7 +93,7 @@ object BottomSolver {
     val lift = unit.members.map(_.y).max - unit.pivot.y
     val bottoms = getBottomPositions(state) map { case (x, y) => (x, y - lift) }
 
-    val emulator = new Emulator(Field.from(state.field))
+    val emulator = new Emulator(Field.from(state.field), phrases)
     bottoms.filter({ case (x, y) =>
       emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y)) &&
         emulator.anyNeighborNotEmpty(unit, x, y) &&

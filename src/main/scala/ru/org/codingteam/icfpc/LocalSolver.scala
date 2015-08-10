@@ -31,7 +31,7 @@ object LocalSolver {
         val spells: Set[List[Command]] = phrases.map(Utils.decode)
 
         // need our own instance so that we can call getSpawnPosition
-        val emul: Emulator = new Emulator(field)
+        val emul: Emulator = new Emulator(field, phrases)
 
         val openset: PriorityQueue[Solution] = new PriorityQueue()
         val closedset: HashSet[Solution] = new HashSet()

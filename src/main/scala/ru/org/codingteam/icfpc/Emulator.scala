@@ -3,6 +3,8 @@ package ru.org.codingteam.icfpc
 import ru.org.codingteam.icfpc.definitions.{FieldDef, CellDef, UnitDef}
 import Direction._
 
+import scala.collection.mutable.LinkedList
+
 object Field {
 
   def from(fieldDef: FieldDef): Field = {
@@ -119,14 +121,35 @@ class Field(val width : Int, val height : Int) {
 
 case class StepResult(gameOver : Boolean, toLock : Boolean)
 
-class Emulator (val field : Field) {
+class Emulator (val field : Field, phrases: Set[String]) {
 
   // Current unit should be in global field coordinates
   var currentUnit : UnitDef = _
 
   var fieldDef : FieldDef = _
 
-  var score = 0
+  var commands = new LinkedList[Command]()
+  var moveScore = 0
+  def powerScore = {
+      val cmds = Utils.encode(commands.toList.reverse)
+      var ps = 0
+      for(spell <- phrases) {
+          val len = spell.length
+
+          var reps = 0
+          var lastIndex = 0
+          while(cmds.indexOf(spell, lastIndex) > 0) {
+              reps += 1
+              lastIndex += 1
+          }
+
+          val powerBonus = if(reps > 0) 300 else 0
+
+          ps += 2 * len * reps + powerBonus
+      }
+      ps
+  }
+  def score = moveScore + powerScore
   var units = 0
 
   // Indicates that the Emulator can be in an inconsistent state
@@ -310,6 +333,7 @@ class Emulator (val field : Field) {
 
   // Return true if the unit is locked as a result of command execution
   def executeCommand(cmd : Command) : Boolean = {
+      commands = cmd +: commands
       currentUnit = tryCommand(currentUnit, cmd)
       return ! check(currentUnit)
   }
@@ -334,8 +358,7 @@ class Emulator (val field : Field) {
         println(s"$cleared rows cleared.")
       }
 
-      val moveScore = getMoveScore(oldUnit, cleared)
-      score += moveScore
+      moveScore += getMoveScore(oldUnit, cleared)
       previousUnitClearedLines = cleared
 
       val nextOk = spawnNextUnit()
@@ -399,7 +422,7 @@ object Emulator {
   def apply(path : String) : Emulator = {
     val fd = Serializer.fromFile(path)
     val field = new Field(fd.width, fd.height)
-    val em = new Emulator(field)
+    val em = new Emulator(field, Set())
     em.load(fd)
     return em
   }

@@ -60,7 +60,7 @@ object Application extends App {
         case Some(scoresFile) =>
           val oldScores = Utils.getScore(scoresFile, field.id, seed)
           val maxOldScore = if (oldScores.isEmpty) 0 else oldScores.max
-          val emulator = new Emulator(Field.from(field))
+          val emulator = new Emulator(Field.from(field), phrases)
           emulator.load(field)
           emulator.initSourceWithSeed(seed)
           emulator.emulate(commands)

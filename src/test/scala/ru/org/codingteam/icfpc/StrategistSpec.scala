@@ -17,21 +17,21 @@ class StrategistSpec extends FlatSpec with Matchers {
       filled = Vector(),
       sourceLength = 1,
       sourceSeeds = Vector(0))
-    val solution = Strategist.solution(field, 0)
+    val solution = Strategist.solution(field, 0, Set())
     assert(solution.nonEmpty)
   }
 
   it should "solve problem_0.json" in {
     val string = Source.fromFile("problem_0.json").getLines().mkString("\n")
     val problem = Serializer.deserialize(string)
-    val solution = Strategist.solution(problem, problem.sourceSeeds.head)
+    val solution = Strategist.solution(problem, problem.sourceSeeds.head, Set())
     assert(solution.size > 20)
   }
 
   it should "solve problem_8.json" in {
     val string = Source.fromFile("problem_8.json").getLines().mkString("\n")
     val problem = Serializer.deserialize(string)
-    val solution = Strategist.solution(problem, problem.sourceSeeds.head)
+    val solution = Strategist.solution(problem, problem.sourceSeeds.head, Set())
     assert(solution.nonEmpty)
   }
 }

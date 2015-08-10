@@ -8,11 +8,11 @@ object Strategist {
   def solution(problem: FieldDef, seed: Int, phrases: Set[String]): Seq[Command] = {
     val field = Field.from(problem)
     val units = problem.getUnits(seed).toList
-    val emulator = new Emulator(field)
+    val emulator = new Emulator(field, phrases)
     emulator.load(problem)
     emulator.initSourceWithSeed(seed)
 
-    solve(emulator, SolverState(Field.from(emulator), units), phrases).init // Remove the last turn
+    solve(emulator, SolverState(Field.from(emulator), units, phrases), phrases).init // Remove the last turn
   }
 
   private def solve(emulator: Emulator, state: SolverState, phrases: Set[String], commands: Seq[Command] = List()): Seq[Command] = {
@@ -29,6 +29,7 @@ object Strategist {
           val state_ = SolverState(
             Field.from(emulator),
             state.units.drop(steps.size),
+            phrases,
             steps.lastOption.flatMap(_.lastMovedUnit),
             steps.lastOption.flatMap(_.targetPosition)
           )

@@ -15,29 +15,13 @@ Dependencies
 Usage
 -----
 
-    # Run application for submission
-    > sbt "run -f filename.json [-print true] [-p phrase1] [-p phrase2] ..." 
+Run `solver` with appropriate parameters:
 
-    # Run The Visualizator:
-    # If solution is not provided The Visualizator starts in Manual Mode
-    > sbt "run-main ru.org.codingteam.icfpc.visual.VisualizatorApplication [filename.json] [solution] [srcIndex]"
+```
+$ ./solver run -f filename.json [-print true] [-p phrase1] [-p phrase2] ...
+```
 
-Visualizer Shorcuts
--------------------
-
-## Manual Mode ##
-
-- `W` — Move(W)
-- `E` — Move(E)
-- `S` — Move(SW)
-- `D` — Move(SE)
-- `,` — Turn(clockwise = true)
-- `.` — Turn(clockwise = false)
-- `O` — Open another problem file
-
-## Replay Mode ##
-
-- `SPACE` — pause/resume replay
+We're sorry for loads of sbt's info in the output, hope you can `grep` it out ;)
 
 Team
 ----

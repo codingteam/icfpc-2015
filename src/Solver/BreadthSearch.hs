@@ -39,6 +39,7 @@ calcUnitMoves board unit = snd $ execState go (start, start)
 			(prevmoves, allmoves) <- get
 
 			let moves = H.filterWithKey (\k _ -> not $ H.member k allmoves)
+			          $ H.filterWithKey (\k _ -> not $ hitTest (unitPhase k unit) board)
 				      $ H.fromList $ concatMap nextStates $ H.toList prevmoves
 
 			put (moves, H.union allmoves moves)

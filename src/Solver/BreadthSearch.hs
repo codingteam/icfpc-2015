@@ -32,7 +32,7 @@ type PossibleMoves = H.HashMap PhaseState CommandHistory
 calcUnitMoves :: Board -> Unit -> PossibleMoves
 calcUnitMoves board unit = snd $ execState go (start, start)
 	where
-		start = H.singleton (PhaseState 0 0 0 6) []
+		start = H.singleton (PhaseState 0 0 0 (unitSymmetry unit)) []
 
 		go :: State (PossibleMoves, PossibleMoves) ()
 		go = do

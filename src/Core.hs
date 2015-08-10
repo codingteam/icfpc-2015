@@ -6,3 +6,6 @@ module Core
        , module Core.GameMechanics
        ) where
 
+import Core.GameModel
+import Core.JSON
+import Core.GameMechanics

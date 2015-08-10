@@ -32,11 +32,8 @@ initBoard g = let w  = 2 + gameiWidth g
                                                               
     applyFilled :: V.Vector (V.Vector Field) -> [(Int, [Cell])] -> V.Vector (V.Vector Field)
     applyFilled vec []   = vec
-    applyFilled vec cs =
-      let y     = fst (head cs)
-          cells = snd (head cs)
-      in
-       flip applyFilled (tail cs) $ vec V.// [(y, (vec V.! y V.// map (\(Cell x y) -> (x, Field True (Cell x y))) cells))]
+    applyFilled vec ((y,cells):cs) =
+      flip applyFilled cs $ vec V.// [(y + 1, (vec V.! (y + 1) V.// map (\(Cell x y) -> (x + 1, Field True (Cell x y))) cells))]
 
 move :: (Unit, UnitStates) -> MoveDirection -> (Unit, UnitStates)
 move (unit, states) d =

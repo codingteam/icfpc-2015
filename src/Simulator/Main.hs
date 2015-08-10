@@ -63,7 +63,7 @@ renderASCII gs = do
   let v0 = fields V.! 0
       
   putStr "   "
-  imapM_ (\x _ -> printf "%3.d" (x - 1)) $ V.slice 0 (V.length v0) v0
+  imapM_ (\x _ -> printf "%3.d" (x - 1)) v0 -- $ V.slice  (V.length v0) v0
   putStr "\n\n"
   
   imapM_ (\y v ->
@@ -72,7 +72,7 @@ renderASCII gs = do
              if even y then putChar ' ' else return ()
              V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
              putStr "\n"
-         ) $ V.slice 0 (V.length fields) fields
+         ) fields -- $ V.slice 0 (V.length fields) fields
 
   putStr "\n     ------------------------------------ \n\n"
     

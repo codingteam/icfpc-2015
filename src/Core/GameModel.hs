@@ -31,6 +31,7 @@ data GameState = GameState {
   , gamesEnded  :: Bool
   } deriving (Show, Eq)
 
+
 data MoveDirection = E | W | SE | SW deriving (Show, Eq, Ord)
 data TurnDirection = CW | CCW deriving (Show, Eq, Ord)
 data Command = Move MoveDirection
@@ -56,4 +57,47 @@ data GameOutput = GameOutput {
   , gameoCommands  :: [Char]
   } deriving (Show, Generic)
 
-             
+
+overCells :: (Cell -> Cell) -> Unit -> Unit
+overCells f u = Unit { members = V.map f (members u), pivot = f (pivot u) }
+
+translateUnit :: (Int, Int) -> Unit -> Unit
+translateUnit delta = overCells (translateCell delta)
+
+translateCell :: (Int, Int) -> Cell -> Cell
+translateCell (deltaX, deltaY) c = Cell { x = x c + deltaX, y = y c + deltaY }
+
+rotateUnit :: Int -> Unit -> Unit
+rotateUnit angleCCW
+  | angleCCW < 0   = vmirrorUnit . rotateUnit (abs angleCCW) . vmirrorUnit
+  | angleCCW == 0  = id
+  | otherwise      = \unit -> (overCells $ rotateCell (pivot unit) angleCCW) $ unit
+
+rotateCell :: Cell -> Int -> Cell -> Cell
+rotateCell pivot angleCCW cell= Cell {x = ru, y = rv}
+  where
+    u = x cell - x pivot
+    v = y cell - y pivot
+
+    xx = u - half v
+    yy = v
+    zz = 0 - xx - yy
+
+    (rx, ry, rz) = iterate transform (xx, yy, zz) !! angleCCW
+
+    transform (x, y, z) = (x', y', z') where
+      x' = x + y + 0
+      y' = 0 + y + z
+      z' = x + 0 + z
+
+    ru = x pivot + rx + half ry
+    rv = y pivot + ry
+
+    half arg | y pivot `mod` 2 == 0   = arg `div` 2
+             | otherwise              = (arg + 1) `div` 2
+
+vmirrorUnit :: Unit -> Unit
+vmirrorUnit = overCells vmirrorCell
+
+vmirrorCell :: Cell -> Cell
+vmirrorCell c = Cell {x = x c, y = 0 - y c}

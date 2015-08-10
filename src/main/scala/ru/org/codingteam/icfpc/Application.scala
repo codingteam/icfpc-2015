@@ -55,7 +55,7 @@ object Application extends App {
 
     var good = new ListBuffer[(Int, Int, Int)]()
     val outs = field.sourceSeeds map { seed =>
-      val commands = Strategist.solution(field, seed)
+      val commands = Strategist.solution(field, seed, phrases)
       mbScores match {
         case Some(scoresFile) =>
           val oldScores = Utils.getScore(scoresFile, field.id, seed)

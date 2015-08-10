@@ -294,6 +294,16 @@ class Emulator (val field : Field) {
       mapUnit(unit)(rotate(unit.pivot)(clockwise))
     }
 
+  // Return true if the unit will be locked in the process or as a result of
+  // commands execution
+  def willLockSequence(unit: UnitDef, cmds: List[Command]): Boolean =
+  if(cmds.isEmpty) {
+      false
+  } else {
+      val translated = tryCommand(unit, cmds.head)
+      willLock(unit, cmds.head) || willLockSequence(translated, cmds.tail)
+  }
+
   // Return true if the unit will be locked as a result of command execution
   def willLock(unit: UnitDef, cmd : Command) : Boolean =
       ! check(tryCommand(unit, cmd))

@@ -5,20 +5,20 @@ import ru.org.codingteam.icfpc.definitions.FieldDef
 
 object Strategist {
 
-  def solution(problem: FieldDef, seed: Int): Seq[Command] = {
+  def solution(problem: FieldDef, seed: Int, phrases: Set[String]): Seq[Command] = {
     val field = Field.from(problem)
     val units = problem.getUnits(seed).toList
     val emulator = new Emulator(field)
     emulator.load(problem)
     emulator.initSourceWithSeed(seed)
 
-    solve(emulator, SolverState(Field.from(emulator), units)).init // Remove the last turn
+    solve(emulator, SolverState(Field.from(emulator), units), phrases).init // Remove the last turn
   }
 
-  private def solve(emulator: Emulator, state: SolverState, commands: Seq[Command] = List()): Seq[Command] = {
+  private def solve(emulator: Emulator, state: SolverState, phrases: Set[String], commands: Seq[Command] = List()): Seq[Command] = {
     def reduce(steps: Seq[SolverState]): Seq[Command] = {
       val cmds = steps.filter(_.lastMovedUnit.isDefined).toStream.map(
-        step => LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get)
+        step => LocalSolver.findPath(step.field, step.lastMovedUnit.get, step.targetPosition.get, phrases)
       )
 
       val commands_ = cmds.takeWhile(c => c.isDefined).flatMap(c => c.get).toVector
@@ -33,14 +33,14 @@ object Strategist {
             steps.lastOption.flatMap(_.targetPosition)
           )
 
-          solve(emulator, state_, commands ++ commands_)
+          solve(emulator, state_, phrases, commands ++ commands_)
         case _ =>
           println("!!!Terminated prematurely; please report")
           commands ++ commands_.take(commandCount)
       }
     }
 
-    val solution = BottomSolver.solution(state)
+    val solution = BottomSolver.solution(state, phrases)
     solution match {
       case Some(steps) => reduce(steps)
       case None => commands

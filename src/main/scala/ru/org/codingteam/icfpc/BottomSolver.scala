@@ -58,7 +58,7 @@ object BottomSolver {
     }
   }
 
-  def solution(start: SolverState): Option[Seq[SolverState]] = {
+  def solution(start: SolverState, phrases: Set[String]): Option[Seq[SolverState]] = {
     if (goalAchieved(start)) {
       return None
     }
@@ -68,7 +68,7 @@ object BottomSolver {
     while (!goalAchieved(state)) {
       val unit = state.currentUnit.get
       val emulator = new Emulator(state.field)
-      val positions = getBottomUnitPositions(state, unit)
+      val positions = getBottomUnitPositions(state, unit, phrases)
       val bottomest = positions.sortWith(_._2 > _._2).headOption
       bottomest match {
         case Some(b) =>
@@ -87,7 +87,7 @@ object BottomSolver {
     state.allPositions.filter(p => state.bottomNotEmpty(p) && state.isEmpty(p)).toStream
   }
 
-  def getBottomUnitPositions(state: SolverState, unit: UnitDef): Stream[Position] = {
+  def getBottomUnitPositions(state: SolverState, unit: UnitDef, phrases: Set[String]): Stream[Position] = {
     val lift = unit.members.map(_.y).max - unit.pivot.y
     val bottoms = getBottomPositions(state) map { case (x, y) => (x, y - lift) }
 
@@ -95,7 +95,7 @@ object BottomSolver {
     bottoms.filter({ case (x, y) =>
       emulator.check(emulator.translate(unit)(x - unit.pivot.x, y - unit.pivot.y)) &&
         emulator.anyNeighborNotEmpty(unit, x, y) &&
-        LocalSolver.findPath(state.field, unit, (x, y)).isDefined
+        LocalSolver.findPath(state.field, unit, (x, y), phrases).isDefined
     })
   }
 

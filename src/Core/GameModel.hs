@@ -3,7 +3,7 @@
 module Core.GameModel where
 
 import GHC.Generics (Generic)
-import Data.Vector
+import qualified Data.Vector as V
 import qualified Data.HashSet as H
 import qualified Data.HashMap.Strict as M
 import Data.Hashable (Hashable)
@@ -105,3 +105,7 @@ vmirrorUnit = overCells vmirrorCell
 
 vmirrorCell :: Cell -> Cell
 vmirrorCell c = Cell {x = x c, y = 0 - y c}
+
+
+unitBottom :: Unit -> Int
+unitBottom u = maximum . map y . H.toList . members $ u

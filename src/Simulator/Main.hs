@@ -4,13 +4,18 @@ module Main where
 import Core.JSON
 import Core.GameModel
 import Core.GameMechanics
+import Solver.Solver
 
 import qualified Data.Vector as V
 import qualified Data.HashSet as H
+import qualified Data.HashMap.Lazy as M
 import Data.ByteString.Lazy.Char8 (pack, unpack, empty)
 import Data.Aeson (encode, decode, eitherDecode)
 import Data.Maybe
+import Data.List
+import Data.Function (on)
 import Options.Applicative
+import Control.Applicative
 import Text.Printf (printf)
                                  
 loadProblem :: String -> IO (Maybe GameInput)
@@ -34,6 +39,7 @@ runOpts (SimOptions file step) = do
   maybeGameInput <- loadProblem file
 
   case maybeGameInput of
+    Nothing -> fail "Failed to load problem file"
     Just g -> do
       let units = gameiUnits g
           gs    = GameState { gamesBoard = initBoard g
@@ -54,22 +60,15 @@ runOpts (SimOptions file step) = do
               units   = gamesUnits gs
               shifted = shiftSpawnedUnit (gamesUnit gs) (boardWidth board)
 
-          print unit
-          print shifted
+          let moves = calcUnitMoves (gamesBoard gs) shifted
+
+
+          case sortBy (flip compare `on` unitBottom . fst) moves of
+            []      -> undefined -- no moves
+            (u,h):_ -> print ("Move: " ++ show (u,h))
+
+          --loopUntilTheEndOfTheWorld gs
           
-          let ngs     =
-                if hitTest shifted board
-                then gs { gamesEnded = True }
-                else gs { gamesUnit = shifted, gamesUnits = tail units }
-          print (gamesEnded ngs)
-          
-          case gamesEnded ngs of
-            False -> do
-              renderASCII ngs
-              loopUntilTheEndOfTheWorld ngs
-            _     -> return ()
-          
-    Nothing -> fail "Failed to load problem file"
 
 -- Just for a debug
 -- Didn't get why it doesn't print '0'

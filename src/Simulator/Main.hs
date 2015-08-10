@@ -6,6 +6,7 @@ import Core.GameModel
 import Core.GameMechanics
 
 import qualified Data.Vector as V
+import qualified Data.HashSet as H
 import Data.ByteString.Lazy.Char8 (pack, unpack, empty)
 import Data.Aeson (encode, decode, eitherDecode)
 import Data.Maybe
@@ -78,30 +79,24 @@ renderASCII gs = do
       unit   = gamesUnit gs
       width  = boardWidth board - 2
       height = boardHeight board - 2
-      fields = boardFields board
+      filled = filledCells board
 
   printf "Size: %dx%d\n\n" width height
 
-  let v0 = fields V.! 0
-      
   putStr "   "
-  imapM_ (\x _ -> printf "%3.d" (x - 1)) v0 -- $ V.slice  (V.length v0) v0
+  for [1..width] $ \x -> printf "%3.d" (x - 1)
   putStr "\n\n"
   
-  imapM_ (\y v ->
-           do
-             printf "%-3.d" (y - 1)
+  for [0..height-1] $ \y -> do
+             printf "%-3.d" y
              if even y then putChar ' ' else return ()
-             V.mapM_ (\f -> printf " %c " (if filled f then '@' else '.')) v
+             for [0..width-1] $ \x -> 
+                printf " %c " (if H.member (Cell x y) filled then '@' else '.')
              putStr "\n"
-         ) fields -- $ V.slice 0 (V.length fields) fields
 
   putStr "\n     ------------------------------------ \n\n"
-    
-  where
-    imapM_ :: Monad m => (Int -> a -> m b) -> V.Vector a -> m ()
-    imapM_ fn v = mapM_ (uncurry fn) $ zip [0 .. V.length v] (V.toList v)
-  
+
+for = flip mapM_
 
 main :: IO ()
 main = execParser opts >>= runOpts

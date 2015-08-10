@@ -5,6 +5,7 @@ module Core.GameModel where
 import GHC.Generics (Generic)
 import Data.Vector
 import qualified Data.HashSet as H
+import qualified Data.HashMap.Strict as M
 import Data.Hashable (Hashable)
 
 data Cell = Cell {
@@ -21,7 +22,7 @@ data Unit = Unit {
 data Field = Field { filled :: Bool, cell :: Cell } deriving (Show, Eq)
 
 data Board = Board {
-    boardFields :: Vector (Vector Field)
+    filledCells  :: H.HashSet Cell
   , boardWidth  :: Int
   , boardHeight :: Int
   } deriving (Show, Eq)

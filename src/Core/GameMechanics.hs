@@ -54,11 +54,10 @@ shiftSpawnedUnit unit boardW =
 
 move :: (Unit, UnitStates) -> MoveDirection -> (Unit, UnitStates)
 move (unit, states) d =
-  (Unit {
+  Unit {
     members = V.map (translate d) (members unit),
     pivot   = translate d (pivot unit)
-    },
-   states)
+    }
   where
     translate :: MoveDirection -> Cell -> Cell
     translate E  (Cell x y) = Cell (x + 1) y
@@ -72,8 +71,8 @@ move (unit, states) d =
 -- TODO:
 -- port the code from there: https://github.com/ForNeVeR/icfpc-2015/blob/b53b2675f37e888689181f8e9540b805120c3ab6/src/main/scala/ru/org/codingteam/icfpc/Emulator.scala#L225
 --
-turn :: (Unit, UnitStates) -> TurnDirection -> (Unit, UnitStates)
-turn (unit, state) d = (rotate d unit, state)
+turn :: Unit -> TurnDirection -> Unit
+turn unit d = rotate d unit
   where
     rotate :: TurnDirection -> Unit -> Unit
     rotate d u = u { members = V.map (_rotate (cc d) u) (members u) }

@@ -27,14 +27,14 @@ $ ./solver run -f filename.json [-print true] [-p phrase1] [-p phrase2] ...
 
 We're sorry for loads of sbt's info in the output, hope you can `grep` it out ;)
 
-Team
-----
+Team and reports
+----------------
 Team members in alphabetical order:
 
-- [ForNeVeR][fornever]
+- [ForNeVeR][fornever] ([report][report-fornever])
 - [grouzen][]
-- [Minoru][minoru]
-- [portnov][]
+- [Minoru][minoru] ([report][report-minoru])
+- [portnov][] ([report][report-portnov])
 - [rexim][]
 - [ulidtko][]
 
@@ -42,5 +42,8 @@ Team members in alphabetical order:
 [grouzen]: https://github.com/grouzen
 [minoru]: https://github.com/Minoru
 [portnov]: https://github.com/portnov
+[report-fornever]: https://fornever.me/posts/2015-08-14-icfpc-2015-report_ru.html
+[report-minoru]: https://blog.debiania.in.ua/posts/2015-08-11-icfpc-2015.html
+[report-portnov]: http://iportnov.blogspot.ru/2015/08/icfpc-icfpc-2015.html
 [rexim]: https://github.com/rexim
 [ulidtko]: https://github.com/ulidtko

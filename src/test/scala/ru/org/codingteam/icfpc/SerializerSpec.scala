@@ -24,7 +24,7 @@ class SerializerSpec extends FlatSpec with Matchers {
                      |    "filled": [],
                      |    "sourceLength": 100
                      |}""".stripMargin
-    val field = Serializer.deserialize(problem0)
+    val field = Serializer.deserialize[FieldDef](problem0)
     val expected = FieldDef(height = 10, width = 10, sourceSeeds = Vector(0), units = Vector(UnitDef(
       members = Vector(CellDef(0, 0)),
       pivot = CellDef(0, 0)

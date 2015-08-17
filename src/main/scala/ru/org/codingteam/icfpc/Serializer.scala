@@ -11,12 +11,12 @@ object Serializer {
     write[Seq[OutputDef]](t)
   }
 
-  def deserialize(x: String): FieldDef = {
-    read[FieldDef](x)
+  def deserialize[T : Reader](x: String): T = {
+    read[T](x)
   }
 
   def fromFile(path : String) : FieldDef = {
     val content = Source.fromFile(path).mkString
-    deserialize(content)
+    deserialize[FieldDef](content)
   }
 }

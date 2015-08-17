@@ -1,2 +1,0 @@
-all:
-	sbt compile
